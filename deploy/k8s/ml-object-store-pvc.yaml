@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ml-object-store-pv-fda-classifier
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: "" # Bound explicitly
+  mountOptions:
+    - implicit-dirs
+  csi:
+    driver: gcsfuse.csi.storage.gke.io
+    volumeHandle: fdaclassifier # <-- CORRECT: Raw bucket name only (No gs:// prefix)
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ml-object-store-fda-classifier
+  namespace: ml-workloads
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti
+  volumeName: ml-object-store-pv-fda-classifier
+  storageClassName: "" # Bound explicitly to the PV above
