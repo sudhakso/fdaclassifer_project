@@ -86,16 +86,27 @@ docker build -t litewave-fda-trainer:dev .
 docker tag litewave-fda-trainer:dev "$TRAINER_IMAGE" && docker push "$TRAINER_IMAGE"
 
 export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
-export TRAINER_IMAGE=gcr.io/<GCP_PROJECT>/litewave-fda-trainer:v1.0
-export GCS_BUCKET=<BUCKET>
-export SERVICE_ACCOUNT=vijeta-finetuning-workload-sa
+export TRAINER_IMAGE=your-registry/litewave-fda-trainer:TAG
 envsubst < deploy/k8s/fine-tune-job.yaml | kubectl apply -f -
-kubectl logs -f "job/litewave-fda-encoder-finetune-${RUN_ID}" -n ml-workloads
+kubectl logs -f "job/fda-train-${RUN_ID}" -n ml-workloads
 ```
 
-The service account needs Workload Identity permission to read `gs://$GCS_BUCKET/raw_data/` and write `gs://$GCS_BUCKET/registry/`. The job uploads the final model only (`config.json`, weights, tokenizer, `training_summary.json`), not epoch checkpoints.
+The Job uses the same cluster contract as the Gemma4 trainer: namespace `ml-workloads`, service account `vijeta-finetuning-workload-sa`, L4 node pool, and the `ml-object-store` GCS FUSE volume mounted at `/gcs-mount`. Put the labelled JSON at `dataset/v1/fda_labelled_sample.json` in that bucket. The trainer writes the final model to `registry/model-v1/` on the same mount (`config.json`, weights, tokenizer, `training_summary.json`), not epoch checkpoints.
 
 After the object prefix is in place, call the inference service `/reload` endpoint from outside this job. The training container does not send that webhook.
+
+## Run inference on GKE
+
+Put unlabeled observations at `evaluation/fda_observations.json` in the same bucket. `data/evaluation/fda_observations.json` is a three-observation sample in that shape. The Job reads the trained model from `registry/model-v1/` and writes `evaluation/predictions-${RUN_ID}.json`. Rebuild the trainer image first so it includes the batch scorer. The container entrypoint is still training; this Job overrides it.
+
+```bash
+export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
+export TRAINER_IMAGE=your-registry/litewave-fda-trainer:TAG
+envsubst < deploy/k8s/infer-job.yaml | kubectl apply -f -
+kubectl logs -f "job/fda-infer-${RUN_ID}" -n ml-workloads
+```
+
+One L4 is enough. Scoring is one forward pass per batch of 16, then up to 128 greedy steps for the rationale. A few thousand observations finish in minutes. The 12–24Gi memory limit is enough for DeBERTa-v3-base; the 2Gi shared-memory volume counts against that limit.
 
 ## Scale
 

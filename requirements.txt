@@ -1,4 +1,6 @@
-transformers>=4.46.0
+# 5.19.0 calls torch.accelerator during import and raises on PyTorch 2.6 when
+# no accelerator is selected yet. 5.18.0 still loads DeBERTa on this image.
+transformers>=4.46.0,<5.19.0
 accelerate>=0.34.0
 google-cloud-storage>=2.18.0
 sentencepiece>=0.2.0

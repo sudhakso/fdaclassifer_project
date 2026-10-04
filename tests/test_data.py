@@ -3,6 +3,7 @@ import unittest
 from fda_classifier.data import (
     class_weights,
     flatten_observations,
+    load_inference_rows,
     load_training_examples,
     normalize_cfr,
     normalize_tier,
@@ -110,6 +111,31 @@ class LabelledRecordTests(unittest.TestCase):
         self.assertIn("Failure Mode: monitoring gap", row["fmea_rationale"])
         self.assertIn("Citation: 21 CFR 211.113", row["text"])
         self.assertIn("503B Outsourcing Facility | Summary: Aseptic failures.", row["text"])
+
+    def test_inference_rows_keep_identifiers_without_labels(self):
+        rows = load_inference_rows({
+            "records": [
+                {
+                    "record_id": "307752",
+                    "fei_number": "3001234567",
+                    "firm_name": "Example Pharma LLC",
+                    "establishment_type": "503B Outsourcing Facility",
+                    "observation_summary": "Aseptic failures.",
+                    "observations": [
+                        {
+                            "observation_number": 1,
+                            "full_details": "Particle counts were paused during filling.",
+                        },
+                        {"observation_number": 2},
+                    ],
+                }
+            ]
+        })
+
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["record_id"], "307752")
+        self.assertEqual(rows[0]["observation_number"], 1)
+        self.assertIn("Details: Particle counts were paused during filling.", rows[0]["text"])
 
     def test_cfr_and_tier_normalization(self):
         self.assertEqual(normalize_cfr("CFR §211.165 / CFR §211.160"), "211.165 / 211.160")

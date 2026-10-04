@@ -4,7 +4,9 @@
 #   docker build -t litewave-fda-trainer:dev .
 #   docker tag litewave-fda-trainer:dev $TRAINER_IMAGE && docker push $TRAINER_IMAGE
 
-FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
+# 2.6 is the newest official CUDA 12.4 runtime. DeBERTa-v3-base ships only
+# pytorch_model.bin, and current transformers refuses torch.load below 2.6.
+FROM pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \

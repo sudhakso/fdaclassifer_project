@@ -184,6 +184,27 @@ def normalize_cfr(value: object) -> str | None:
     return " / ".join(found)
 
 
+def load_inference_rows(payload: object) -> list[dict]:
+    """Read unlabeled observations in the same shape as the training file.
+
+    Labels are ignored. Each row keeps the identifiers needed to join the
+    prediction back to the source observation, plus the encoder text.
+    """
+    rows: list[dict] = []
+    for record, observation in _iter_labelled_rows(payload):
+        details = _first(observation, _DETAIL_KEYS)
+        if not details:
+            continue
+        rows.append({
+            "record_id": record.get("record_id"),
+            "fei_number": record.get("fei_number"),
+            "firm_name": record.get("firm_name"),
+            "observation_number": observation.get("observation_number"),
+            "text": build_input_text(observation, record, str(details)),
+        })
+    return rows
+
+
 def load_training_examples(payload: object) -> tuple[list[dict[str, str]], int]:
     """Read the labelled inspection file into one example per observation.
 
