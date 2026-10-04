@@ -1,0 +1,86 @@
+# Fine-tune DeBERTa-v3-base on FDA 483 observation severity (Minor / Major / Critical).
+#
+# Runs in the same GKE pool as the Gemma trainer: namespace ml-workloads,
+# L4 nodes, Workload Identity service account that can read the dataset and
+# write the model registry.
+#
+# Build + push from the repo root, then:
+#   export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
+#   export TRAINER_IMAGE=gcr.io/<GCP_PROJECT>/litewave-fda-trainer:v1.0
+#   export GCS_BUCKET=<BUCKET>
+#   export SERVICE_ACCOUNT=vijeta-finetuning-workload-sa
+#   envsubst < deploy/k8s/fine-tune-job.yaml | kubectl apply -f -
+#   kubectl logs -f job/litewave-fda-encoder-finetune-${RUN_ID} -n ml-workloads
+#
+# Bucket layout:
+#   gs://${GCS_BUCKET}/raw_data/fda_483_observations.json
+#   gs://${GCS_BUCKET}/registry/model-v1/     # config, weights, tokenizer, training_summary.json
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: litewave-fda-encoder-finetune-${RUN_ID}
+  namespace: ml-workloads
+  labels:
+    app: litewave-trainer
+    pipeline: fda-severity-classification
+    run_id: "${RUN_ID}"
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: litewave-trainer
+        pipeline: fda-severity-classification
+        run_id: "${RUN_ID}"
+    spec:
+      restartPolicy: Never
+      serviceAccountName: ${SERVICE_ACCOUNT}
+      nodeSelector:
+        # This cluster's GPU pool is L4. T4 is nvidia-tesla-t4; A100 is nvidia-a100-80gb.
+        cloud.google.com/gke-accelerator: nvidia-l4
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: encoder-training-runner
+          image: ${TRAINER_IMAGE}
+          imagePullPolicy: Always
+          args:
+            - --fda-data-path=gs://${GCS_BUCKET}/raw_data/fda_483_observations.json
+            - --output-gcs-uri=gs://${GCS_BUCKET}/registry/model-v1/
+            - --base-model=microsoft/deberta-v3-base
+            - --epochs=4
+            - --batch-size=16
+            - --learning-rate=2e-5
+          env:
+            - name: HF_HOME
+              value: /tmp/training_cache/hf
+            - name: TOKENIZERS_PARALLELISM
+              value: "false"
+            - name: PYTORCH_CUDA_ALLOC_CONF
+              value: expandable_segments:True
+          resources:
+            requests:
+              memory: 16Gi
+              cpu: "4"
+              nvidia.com/gpu: "1"
+            limits:
+              memory: 32Gi
+              cpu: "8"
+              nvidia.com/gpu: "1"
+          volumeMounts:
+            - name: dshm
+              mountPath: /dev/shm
+            - name: local-cache
+              mountPath: /tmp/training_cache
+      volumes:
+        # Memory-backed emptyDir is charged against the container memory limit.
+        # 2Gi is enough for two DataLoader workers on this encoder.
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi
+        - name: local-cache
+          emptyDir: {}

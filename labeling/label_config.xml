@@ -1,0 +1,11 @@
+<View>
+  <Header value="FDA 483 severity"/>
+  <Text name="firm" value="$firm_name"/>
+  <Text name="establishment" value="$establishment_type"/>
+  <Text name="text" value="$text"/>
+  <Choices name="severity" toName="text" choice="single" showInline="true">
+    <Choice value="Minor"/>
+    <Choice value="Major"/>
+    <Choice value="Critical"/>
+  </Choices>
+</View>

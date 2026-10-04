@@ -1,0 +1,24 @@
+{
+  "records": [
+    {
+      "fei_number": "3001234567",
+      "firm_name": "Example Pharma LLC",
+      "establishment_type": "503B Outsourcing Facility",
+      "observation_summary": "The inspection found recordkeeping gaps, a missing complaint procedure, and sterility failures released without a root cause.",
+      "observations": [
+        {
+          "full_details": "One batch production record was missing the second reviewer initials on the compression step.",
+          "severity": "Minor"
+        },
+        {
+          "full_details": "The firm had no written procedure describing how unresolved consumer complaints are escalated to quality.",
+          "severity": "Major"
+        },
+        {
+          "full_details": "Two sterility failures were closed without identifying a root cause or extending the investigation to distributed lots.",
+          "severity": "Critical"
+        }
+      ]
+    }
+  ]
+}
