@@ -26,7 +26,9 @@ def load_model(model_dir: str | Path, device: torch.device | None = None) -> tup
         labels = json.load(handle)
     with open(directory / "heads.pt", "rb") as handle:
         heads = torch.load(handle, map_location="cpu", weights_only=False)
-    encoder = AutoModel.from_pretrained(directory)
+    # Training saves the encoder under fp16/bf16 autocast. Force float32 so the
+    # encoder CLS vector and the separately saved heads share one dtype.
+    encoder = AutoModel.from_pretrained(directory, torch_dtype=torch.float32)
     model = FdaMultiHeadModel(
         encoder,
         num_severity=len(labels["severity"]),
@@ -43,7 +45,7 @@ def load_model(model_dir: str | Path, device: torch.device | None = None) -> tup
     model.evidence_rnn.load_state_dict(heads["evidence_rnn"])
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
+    model.to(device=device, dtype=torch.float32)
     model.eval()
     tokenizer = AutoTokenizer.from_pretrained(directory)
     return model, tokenizer, labels

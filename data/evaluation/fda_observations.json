@@ -1,23 +1,536 @@
 {
   "records": [
     {
-      "establishment_type": "503B Outsourcing Facility",
-      "observation_summary": "The inspection found a missing complaint procedure and sterility failures released without a root cause.",
+      "establishment_type": "Producer of non-sterile drugs",
+      "observation_summary": "The firm failed to establish a stability testing program for drug products, lacked finished product testing for strength and quality, failed to establish a quality control unit with written procedures for production, testing, and maintenance, failed to calibrate equipment used for weighing ingredients, and failed to maintain complete batch production and control records with quality control review.",
       "observations": [
         {
-          "full_details": "The firm had no written procedure describing how unresolved consumer complaints are escalated to quality."
-        },
+          "full_details": "Specifically, your firm has failed to calibrate your (b)(4) calibration weight and the (b)(4) (b)(4) balances used to weigh active pharmaceutical ingredients and components for your drug products. Additionally, there are no written procedures describing the requirements for the calibration of the balances and calibration weight."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Institutional Review Committee",
+      "observation_summary": "The IRB failed to follow written procedures for the initial review of research, specifically regarding the distribution of materials and the documentation of responses to member concerns. The IRB also failed to ensure informed consent documents adequately described experimental procedures. Furthermore, the IRB failed to conduct reviews at fully convened meetings with a majority present, instead relying on subcommittee approvals and block votes without documented discussion. Finally, the IRB failed to maintain adequate documentation of its activities, including discrepancies between written minutes and audio recordings regarding member conflicts of interest and abstentions.",
+      "observations": [
         {
-          "full_details": "Two sterility failures were closed without identifying a root cause or extending the investigation to distributed lots."
+          "full_details": "During the 9/18/00 meeting, an IRB member had a conflict of interest on two studies; while minutes recorded abstention, the audiotape did not. During the 1/18/00 meeting, minutes recorded 11 members present with three having conflicts on six studies, but the audio recording did not capture the discussion or the abstentions. During the 3/19/01 meeting, minutes recorded 12 members present with three having conflicts on ten studies; while minutes indicated one member abstained, the audio recording did not reflect that any of the three members abstained."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Home Infusion Provider / Pharmacy",
+      "observation_summary": "The inspection identified multiple deficiencies in the firm's aseptic processing operations, including inadequate environmental monitoring, lack of sterile filter integrity testing, insufficient media fill simulations, poor gowning and aseptic practices, inadequate cleaning and sanitization, and a lack of scientific validation for sterility, potency, and stability testing programs.",
+      "observations": [
+        {
+          "full_details": "The cleaning and sanitization activities performed in the aseptic processing areas are not adequate."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Sterile Drug Manufacturer",
+      "observation_summary": "The inspection revealed significant deficiencies in the firm's quality, laboratory, production, and facilities systems. Key issues included failure to timely file Field Alert Reports, inadequate investigations into product complaints and quality failures, lack of comprehensive training and qualification for personnel, deficient laboratory test methods and controls, inadequate environmental monitoring and sterility assurance practices, improper equipment maintenance and calibration, and poor facility maintenance including pest control issues.",
+      "observations": [
+        {
+          "full_details": "Representative samples are not taken of each shipment of each lot of components for testing or examination. Specifically, a) Endotoxin testing of PVC film (e.g., R-24 Double Wound 96-2439) following extrusion prior to the slitting and bag fabricator is conducted on a (b) (4) basis and per 94.B-024 uses a minimum of (b) (4) of PVC film from each Extruder (i.e., #s 1 & 2). Test procedure 94.B-024 does not identify where samples are collected from on the master roll per lot within the 24-hour period before the slitting/bag fabrication and reads to collect a PVC film sample representative of the lot (per 24 hours). Your firm collected a sample consisting of two feet from the master roll, which was said to be sampled from the end of the run lot. There is no indication if this is a statistically valid sample representative of the lot over a 24 hour period (e.g. beginning, middle and end of the extrusion process). b) Each shipment received for commodities (with the same lot number) are not routinely sampled for testing with the receipt of each shipment when received on different dates. For examples, see 10a - c above. In addition, there is no raw data to support placement of commodities on a reduced testing program whereby one lot of commodity per commodity is tested annually for Incoming Quality (e.g., visual, physical, dimensions, and particulates). c) Testing is not completed on a representative sample that is statistically valid for APIs. For examples: i. Dextrose USP Monohydrate: Lot #16011 JR, received on 04/05/12, included (b) (4) containers and one container was tested for ID; Lot 16010JR, received on 04/05/12 included (b) (4) containers and one container was tested for ID; and Lot 09042 JR01, received on 09/23/11 included (b) (4) containers and one container was tested for full monograph testing. The remaining(b) (4 containers were composited (i.e., containers 2-10, 11-20, 21-30, 31-40, 41-50, 51-60, 61-70, 71-80, 81-90, 91-100, and 101-108) and were tested for specific rotation, color and appearance. Dextrose USP Monohydrate API was put on skip attribute/reduced testing in 1995 and said to be tested at your Rocky Mount facility; however, the data used in the qualification for skip attribute/reduced testing could not be located. No other raw data was provided. ii. Sodium Chloride, USP: Lot #15024 JR, received on 03/19/12, included (b) (4) containers and one container was tested for full monograph testing. iii. Sodium Chloride, USP: Lot 17056 JR, received on 05/24/12, included (b) (4) containers and one container was tested for full monograph testing. (containers from the (b) (4) containers were reassigned lot 17057 JR. Lot 17057 JR included testing container 7 and a composite from containers 1-6 for color and appearance. Container 7 was used for full monograph testing excluding ID since this was tested on lot 17056 JR. d) Lack of documentation on all lots of 70% IPA prepared from 99% IPA with purified water per BCLN0004 for \"Disinfectants Dilutions and Labeling Procedures\". In addition, there is no incoming analytical testing of IPA 99% conducted and no analytical testing conducted on prepared 70% IPA (except bioburden). Your firm does not track all lots of 70% IPA prepared (e.g., labels are kept for prepared 70% IPA used in clean room ISO 7 areas for use on operator gloves and/or when used to clean areas in ISO 7 and ISO 8 areas for product contact surfaces (e.g., filling nozzles)). In addition, there is no validation of the C of A received with IPA 99% and no identification exam listed on the C of A."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Drug Product Manufacturer",
+      "observation_summary": "The inspection identified significant deficiencies in aseptic processing procedures, including inadequate equipment sanitization, improper operator behavior in clean rooms, and insufficient environmental monitoring controls. Additionally, the firm failed to implement effective corrective and preventive actions (CAPAs) for recurring environmental monitoring excursions, with investigations lacking adequate root cause analysis and follow-up.",
+      "observations": [
+        {
+          "full_details": "Operators do not perform inspection of the RABS (b)(4) after installation as required by SOP BF/FM/SOP/182 and SOP BF/FM/SOP/180. An operator in the Grade C area failed to sanitize the RABS (b)(4) after an open (b)(4) operation, contrary to SOP BF/FM/SOP/180 and SOP BF/FM/SOP/194. SOP BF/FM/SOP/180 is inadequate as it lacks instructions to prevent contamination during equipment transfer; an employee was observed squatting to retrieve a vessel from a lower shelf and placing it into the open RABS. Environmental monitoring is not performed at the location where dosing vessels are placed into the RABS. SOP BF/QA/SOP/002 lacks temperature criteria or secure storage locations for media fill units during the time gap between sealing and incubation. The visual inspection SOP is inadequate regarding rejected vial tracking; rejected vials were found in a drawer without proper documentation on the bench sheet. Sterile forceps are stored in a manner that limits sterile access, and operators place sterile (b)(4) face down on work surfaces in Grade B areas."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Shell Egg Producer",
+      "observation_summary": "The firm failed to adhere to Salmonella Enteritidis (SE) prevention requirements, including inadequate cleaning and disinfection of poultry houses, failure to conduct required environmental testing, and use of unapproved testing methods. Additionally, the firm lacked comprehensive SE prevention plans, failed to implement existing fly and rodent monitoring procedures, did not maintain required refrigeration records, and failed to ensure equipment cross-contamination controls and proper record identification.",
+      "observations": [
+        {
+          "full_details": "Your firm's document entitled, \"Procedure: Environmental Sampling for SE\" (created 6/24/2010 and revised 05/27/2011) states \"(b) (4)\". It also (b) (4). (b) (4). Management provided an internet print out listing currently used sampling tools for environmental sampling. The document and management indicated they use (b) (4) for all environmental testing. Using (b) (4) (b) (4) as a tool for environmental sampling for Salmonella Enteritidis is not recognized by the FDA as an equivalent method."
         }
       ]
     },
     {
       "establishment_type": "Drug Manufacturer",
-      "observation_summary": "Batch records were incomplete for one compression lot.",
+      "observation_summary": "The inspection revealed significant deficiencies in equipment cleaning and maintenance, aseptic processing procedures, environmental monitoring, air filtration systems, data integrity and backup, investigation of discrepancies, and process controls. Specific issues included visible residues on cleaned equipment, improper aseptic techniques by personnel, inadequate validation of aseptic processes, lack of airflow visualization and pressure monitoring, deficient environmental monitoring programs, missing engineering diagrams for air handling, failure to maintain data backups, inadequate investigations into sterilization failures and consumer complaints, and lack of scientific rationale for process parameters.",
       "observations": [
         {
-          "full_details": "One batch production record was missing the second reviewer initials on the compression step."
+          "full_details": "CCTV systems are not used to record production operations. The firm has not performed vendor audits for the German contractor providing garment qualification or the supplier of biological indicators. The Quality Unit has not reviewed or approved the 2008 I/OQ documents for the Building Management System."
+        }
+      ]
+    },
+    {
+      "establishment_type": "503B Outsourcing Facility",
+      "observation_summary": "The inspection revealed significant deficiencies in aseptic processing and sterilization validation, including inadequate media fills, smoke studies, and sterilization validation for equipment and glassware. There were failures to investigate unexplained discrepancies, such as HEPA filter leaks, microbial contamination, and product defects. Additionally, the firm lacked proper cleaning and maintenance procedures, failed to validate laboratory testing methods, lacked adequate production and process controls, and failed to maintain environmental monitoring documentation.",
+      "observations": [
+        {
+          "full_details": "Your firm is unable to provide documentation of positive pressure monitoring in the clean room during sterile drug production for the time period prior to March 2018."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The inspection revealed significant deficiencies in the firm's aseptic processing operations, including inadequate gowning, lack of environmental monitoring, and failure to validate sterilization processes. The firm also failed to conduct thorough investigations into batch failures, lacked written quality control procedures, and did not perform required stability testing. Additionally, drug product labels were found to be missing mandatory information required for outsourcing facilities.",
+      "observations": [
+        {
+          "full_details": "Specifically, your firm has no scientific data to justify the assigned Beyond Use Date for the following sterile products: 90 day Beyond Use Date for Testosterone Cypionate Injectable; 30 day Beyond Use Date for Gentamicin Irrigation Solution."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Drug Manufacturer/Packaging Operation",
+      "observation_summary": "The inspection revealed significant deficiencies in the firm's quality control unit, specifically regarding the investigation of out-of-specification (OOS) results, particularly for foreign matter in sterile products. The firm failed to perform thorough root cause analyses, implement effective corrective and preventive actions (CAPA), and maintain adequate documentation for batch failures and deviations. Additionally, there were failures in process validation, equipment maintenance and calibration, environmental monitoring, and the management of incoming components. The firm also lacked standardized procedures for critical operations such as media fills, re-labeling, and adverse event reporting, and failed to ensure that annual product reviews were accurate and comprehensive.",
+      "observations": [
+        {
+          "full_details": "Written procedures (AA204, QA101) do not adequately describe instructions for aborting or invalidating batches. There is no procedure for the storage of integral rejects before transfer, and no requirement for QA to approve pen amendments to batch records, leading to unauthorized changes by production personnel."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Drug Manufacturer",
+      "observation_summary": "The inspection revealed systemic failures in analytical method validation, process validation, data integrity, and quality control oversight. The firm failed to validate numerous test methods for drug products and APIs, lacked scientific rationale for cleaning and hold-time procedures, and failed to maintain adequate documentation for investigations, deviations, and annual product reviews. Furthermore, computer systems lacked necessary controls to prevent data manipulation, and raw material testing was insufficient to ensure compliance with specifications.",
+      "observations": [
+        {
+          "full_details": "Drug products are not stored under appropriate conditions of humidity. Hygroscopic products like Pyridostigmine and Colestipol are stored in warehouses without established control limits or monitoring procedures to prevent moisture-induced degradation."
+        }
+      ]
+    },
+    {
+      "establishment_type": "National Headquarters of a Licensed Blood Bank",
+      "observation_summary": "The inspection revealed systemic failures in the investigation of employee allegations regarding recordkeeping irregularities, inadequate oversight of donor deferral processes, failure to maintain accurate inventory and distribution systems for blood products, and ineffective corrective actions for known quality and safety issues. The firm failed to ensure that unsuitable blood products were quarantined and not reissued, and did not maintain adequate software controls or validation for its National Biomedical Computer System (NBCS). Additionally, the firm's hotline and internal audit processes were found to be insufficient in identifying, investigating, and resolving significant quality and safety concerns.",
+      "observations": [
+        {
+          "full_details": "Only a one-page memo was provided, which lacked documentation of the assessment."
+        },
+        {
+          "full_details": "Inspections in 2001 found the problem of releasing donors from hold before making changes was continuing. The BSL stated 'No training is required'."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Sterile Drug Manufacturer",
+      "observation_summary": "The firm failed to adequately investigate sterility failures and product complaints, often attributing them to customer handling without scientific evidence. Aseptic processing areas showed significant facility maintenance issues, including water incursions and damaged surfaces. Smoke studies and media fills were inadequate to validate aseptic processes. Cleaning and disinfection procedures were deficient, and equipment maintenance and record-keeping practices were insufficient. Additionally, data integrity gaps were identified in computer systems, and annual product reviews were not conducted in a timely manner.",
+      "observations": [
+        {
+          "full_details": "Annual product reviews remain in draft status months after the review period ended. A significant portion of 2025 annual product reviews for US products were late or incomplete."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Producer of Sterile Drug Products",
+      "observation_summary": "The inspection revealed significant deficiencies in sterile drug production, including poor aseptic techniques by personnel, inadequate environmental monitoring and control, lack of sterility testing and growth promotion testing, improper facility design and maintenance, failure to investigate sterility failures and complaints, and inadequate documentation of production and stability testing.",
+      "observations": [
+        {
+          "full_details": "Your firm has used non-sterile wipes to clean and disinfect ISO 5 hoods and the ISO 7 clean room throughout 2013. Additionally, your firm has not rotated cleaning solutions to account for sporicidal agents."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The firm failed to conduct thorough investigations into sterility failures, specifically regarding Gram Positive Rods (Bacillus species), by failing to evaluate potential root causes in the production facility, neglecting to include comprehensive environmental monitoring data, and failing to implement robust corrective and preventive actions to mitigate contamination risks in aseptic compounding areas.",
+      "observations": [
+        {
+          "full_details": "Specifically, your investigations into sterility failures were not conducted thoroughly to evaluate potential root causes in the production facility and to implement robust corrective and preventative action plans to mitigate sterility risks to products. During Oct 2021 to Dec 2021, two sterility failures were observed on the finished product sterility testing, identified to be Gram Positive Rods (Bacillus licheniformis and Niallia circulans), belonging to Bacillus species of family. Sterility failures were investigated under #OOS-OOT-2021-0044 on 20Oct2021 for 8mg Norepinephrine in 0.9% Sodium Chloride (250mL IV Bag), Lot# (b)(4); and #OOS-OOT-2021-0054 on 02Dec2021 for 1 Unit/mL Vasopressin 0.9% Sodium Chloride (50mL), Lot (b)(4). Investigations into sterility failures did not include comprehensive evaluations of environmental monitoring results from the compounding area and personnel; and the review of the environmental excursions were not extended to all excursions from all sources during this time period. Your failure to identify elevated environmental excursions in the aseptic compounding areas (with spore forming microorganisms) as a potential contamination source, insufficient corrective actions were implemented to mitigate spore forming microorganisms in the environment and to protect product sterility during aseptic operations. During our review of the environmental trend report for (b)(4), we observed increased environmental excursion levels from compounding personnel gloves/gowns during October 2021 with at least 13 out of 18 microorganisms identified to be Gram Positive Rods, belonging to Bacillus species family."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Egg Producer",
+      "observation_summary": "The inspection identified failures to maintain site-specific Salmonella Enteritidis (SE) prevention plans for multiple egg-producing facilities and a failure to include required documentation regarding the procurement of chicks from SE-monitored breeder flocks within the SE prevention plan.",
+      "observations": [
+        {
+          "full_details": "Failure to maintain a Salmonella Enteritidis prevention plan (SE) specific for each egg producing site. Specifically, the layer facilities indicated below lack the required site specific SE plans: 11995 Croton Road Croton, Ohio 43013 and 11492 Westley Chapel Road Croton, Ohio 43013."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Producer of Sterile Drugs",
+      "observation_summary": "The firm exhibits significant deficiencies in aseptic processing, including inadequate cleaning and disinfection procedures, lack of environmental monitoring, and improper personnel gowning. Furthermore, the firm fails to perform required sterility and pyrogen testing for batches, lacks written investigations for unexplained discrepancies and test failures, fails to maintain complete batch production records, and operates in an environment lacking appropriate HEPA filtration.",
+      "observations": [
+        {
+          "full_details": "The ISO 8 room in-which the ISO 5 (b)(4) is located, does not have HEPA filter units at the air supply vents for the area. The filter located in the return air grate is not sufficient to ensure adequate filtration of the air circulating through the area."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The inspection identified significant deficiencies in the firm's quality systems, including inadequate investigations into unexplained discrepancies, lack of method validation for release testing, deficient environmental monitoring in aseptic processing areas, incomplete laboratory records, failure to retain required reserve samples, and non-compliance with outsourcing facility registration and bulk drug substance sourcing requirements.",
+      "observations": [
+        {
+          "full_details": "Your outsourcing facility did not submit a report to FDA upon initial registration as an outsourcing facility identifying the drugs compounded during the previous six month period. Specifically, the following products were compounded and not identified on your reports dated December 31, 2020 and/or June 30, 2021. Examples include, but are not limited to: Vitamin D (b)(4)/ml injection, Buprenorphine 0.4 mg/ml injectable, Alpha lipoic acid 25 mg/ml injection, Sildenafil 110 mg capsules, Tadalifil 10 mg troches, Dihydroepiandosterone 58 mg and pregnenolone 250 mg capsules, Dihydroepiandosterone 12.5 mg and pregnenolone 100 mg capsules, Dihydroepiandosterone 25 mg and pregnenolone 100 mg capsules, Minoxidil 5%, tretinoin 0.01%, triamcinolone 0.1% topical solution, Minoxidil 5%, tretinoin 0.01%, finasteride 2.5% topical solution, Naltrexone 2 mg capsules, Dimercapto Succinate acid 250 mg capsules, Liothyronine 35 mcg capsules, Liothyronine 10 mcg capsules, Benzocaine 20%, lidocaine 8%, and tetracaine 8% topical gel, Benzocaine 20%, lidocaine 8%, and tetracaine 4% topical gel, Lidocaine 23% and tetracaine 7% topical gel, Lidocaine 4%, epinephrine 0.05%, tetracaine 0.5% gel, Lidocaine 1% preservative-free buffered with 8.4% sodium bicarbonate injectable, Alprostadil 10 mcg/ml penile injectable, Tri-Mix Alprostadil 20 mcg, papaverine 30 mg, and phentolamine 4 mg/ml, Tri-Mix Alprostadil 30 meg, papaverine 30 mg, and phentolamine 2 mg/ml, Phosphatidyl choline 5% and deoxycholate 4.2% injectable, Testosterone 0.15% topical cream, Testosterone 8 mg/ml topical gel, Prednisolone 1% ophthalmic drops, Mebendazole 100 mg capsules, CoQ10 20 mg/ml in oil injectable, Liposupreme: (b)(4) mg/ml injectable, Myer's cocktail: preservative-free vitamin C (b)(4); magnesium (b)(4) calcium (b)(4) (b)(4) injectable, 7-Keto DHEA injectable, Acetyl cysteine 200 mg/ml injectable, Estriol 2 mg suppositories, Estriol 2 mg and testosterone 10 mg per gram topical gel, Semorelin acetate 1 mg/ml injection, Amphotericin B 50 mg, chloramphenicol 500 mg, hydrocortisone 10 mg/g otic powder, Acetyl D-glucosamine 100 mg/ml injectable, Hydroxocobalamin 1,000 mcg/ml injection."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The firm failed to maintain adequate procedures for aseptic processing, including media fills, environmental monitoring, and cleaning. The quality unit failed to conduct investigations for non-sterile results and patient complaints, and lacked proper oversight of stability testing, batch records, and labeling requirements. Additionally, the firm failed to report all compounded products as required for an outsourcing facility.",
+      "observations": [
+        {
+          "full_details": "Results of stability testing are not used in determining expiration dates. Specifically, your outsourcing facility lacked valid analytical and sterility data to support the 90-day beyond use date (BUD) assigned to repackaged syringes of preservative-free Avastin. The BUD was based on scientific journals not specific to the firm's operations."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The firm failed to maintain adequate quality control, sterility assurance, and environmental monitoring systems. Significant issues included the release of drug product lots that failed batch yield and particulate matter specifications, inadequate investigation of microbiological contamination and customer complaints, poor aseptic technique by operators, and deficient documentation practices. Additionally, the firm lacked robust electronic data integrity controls, failed to perform necessary method transfers and stability studies, and maintained facilities in a state of disrepair.",
+      "observations": [
+        {
+          "full_details": "Batch production and control records do not include complete information relating to the production and control of each batch. A. Your Quality Unit failed to have procedures in place to maintain production and control records. You use laminated plastic sheets (Pallet IDs) to record batch production information, which are not maintained. B. Large quantities of paper documents from production and testing in the record storage room were not reviewed, scanned, or saved into the appropriate batch records."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Producer of Sterile Drug Products",
+      "observation_summary": "The inspection revealed significant deficiencies in the firm's sterile drug production processes, including inadequate validation of sterilization cycles, improper gowning and aseptic technique, deficient environmental monitoring and cleaning systems, lack of proper facility design and air pressure control, inadequate instrument calibration, and insufficient laboratory testing for sterility, potency, stability, and raw material quality.",
+      "observations": [
+        {
+          "full_details": "a) Media fills performed for injectable drug products do not simulate the entire production process including but not limited to: all process steps and manipulations, aseptic filling without terminal filtration, and all container/closure systems used for drug products. Additionally, media fills do not include a challenge of worst case conditions including but not limited to: duration of aseptic processing and representative batch size. b) Integrity testing specifications set by your firm for the Supor 25 and 32 mm syringe filters (0.22 um) have not been verified by the manufacturer or otherwise validated. These filters are used as sterilizing filters in production of injectable drug products. c) Sterilization cycles using the Tuttnauer Tabletop Autoclave Model 2340 have not been validated for terminally sterilized finished drug products. Temperature mapping, heat penetration, and loading configurations have not been evaluated to ensure sterilization of finished drug products, equipment, and containers/closures. d) Sterilization cycles using the All American Model 75X Electric Pressure Steam Sterilizer (serial number 0001199) have not been validated for terminally sterilized finished drug products. Temperature mapping, heat penetration, and loading configurations have not been evaluated to ensure sterilization of finished drug products, equipment, and container/closures. Additionally, the 75X steam sterilizer has not been qualified and no calibration/verification has been performed for the temperature and pressure instruments. e) Sterilization and depyrogenation cycles using the Yamato DK-43 dry heat oven have not been validated for sterilization and depyrogenation of containers, equipment, and powders used in drug products. Temperature mapping, heat penetration, and loading configurations have not been evaluated to ensure sterilization and depyrogenation of containers, closures, equipment, and drug components. Endotoxin challenges have only been performed for one cycle (glassware cycle), however your firm uses another cycle for powders which has not been challenged. Powders intended to be sterilized in this dry heat oven are then mixed into final injectable drug products without further sterilization. Additionally, the dry heat oven has not been qualified and no calibration/verification has been performed for the temperature and pressure instruments."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Drug substance and drug product manufacturer",
+      "observation_summary": "The inspection identified significant deficiencies in aseptic processing, environmental monitoring, visual inspection procedures, data integrity, and quality unit oversight. Key issues include poor aseptic techniques during filling operations and media fills, inadequate mold control and monitoring in classified areas, lack of statistical rigor in visual inspection and AQL testing, deficient electronic data management and audit trail reviews, and failures in the deviation management and CAPA systems.",
+      "observations": [
+        {
+          "full_details": "A. QA unit does not review electronic data or audit trails, relying only on paper records. B. Empower 3 CDS data management is deficient; methods are stored in multiple folders, and QC review does not reconcile all sequences. C. Analyst permissions allow viewing of quantitation fields before saving data. D. QC testing systems lack access controls; a pH meter was found without user/password protection."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Dairy Farm",
+      "observation_summary": "The firm caused violative drug residues in cattle sold for slaughter due to improper drug use, administered animal drugs in a manner contrary to label directions without a valid veterinary client-patient relationship, and failed to maintain complete treatment records, specifically regarding the route of administration and dosage for drugs administered to dairy cows.",
+      "observations": [
+        {
+          "full_details": "Specifically, 1. You do not routinely record the route of administration of each drug administered to the dairy cows on your farm. a. For example, you medicated a dairy cow identified with Ear Tag # (b)(4) with Penicillin (Pen G, PEN) on 11/13/2008. Your computer generated and written record does not indicate the route of administration. b. For example, you medicated a dairy cow identified with Ear Tag # (b)(4) with Sulfadimethoxine (SDM) on 08/05/2009. Your computer generated and written record does not indicate the route of administration. c. For example, you medicated a dairy cow identified with Ear Tag # (b)(4) with Polyflex (Poly) on 08/04/2009 and 08/05/2009. Your computer generated and written record does not indicate the route of administration. 2. You do not always record the dosage of each drug administered to the dairy cows on your farm. a. For example, you medicated a dairy cow identified with Ear Tag # (b)(4) with Flunixin (Banamine; Benamine, BN) on 11/13/2008. Your written and computer generated record does not indicate the dosage of Flunixin (Banamine) that was administered to this dairy cow. b. For example, you medicated a dairy cow identified with Ear Tag # (b)(4) with Polyflex (Poly) on 08/05/2009. Your computer generated and written record does not indicate the dosage of Polyflex that was administered to this dairy cow. c. For example, you medicated a dairy cow identified with Ear Tag # (b)(4) with Penicillin (Pen G, Pen) on 08/08/2009. Your computer generated and written record does not indicate the dosage of Penicillin that was administered to this dairy cow."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The firm failed to maintain adequate aseptic processing controls, including deficient media fill qualifications, lack of gowning qualification, and inadequate smoke studies. Environmental monitoring practices were insufficient, with failures to investigate out-of-specification results and improper sampling procedures. The quality control unit failed to implement robust visual inspection programs or ensure sterility testing was completed prior to product release. Additionally, product labels lacked required adverse event reporting information and directions for use.",
+      "observations": [
+        {
+          "full_details": "Specifically, your containers do not include a label that includes the following information: A. Information to facilitate adverse event reporting: www.fda.gov/medwatch and 1-800-FDA-1088; and B. Directions for use, including, as appropriate, dosage and administration. Examples of your container labels that do not contain this information: i. Prednisolone Phosphate 1% Moxifloxacin 0.5% Bromfenac 0.075% 8mL Sterile Ophthalmic Solution ii.Atropine Sulfate 0.05% 3.5mL Sterile Ophthalmic Solution iii. Timolol 0.5% Brimonidine Tartrate 0.1% Dorzolamide 2% 5mL Sterile Ophthalmic Solution iv.Moxifloxacin 0.5% Bromfenac 0.075% 5mL Sterile Ophthalmic Solution v.Prednisolone Phosphate 1% Moxifloxacin 0.5% 5mL Sterile Ophthalmic Solution vi. Prednisolone Phosphate 1% Moxifloxacin 0.5% Bromfenac 0.075% 8mL Sterile Ophthalmic Solution vii. Prednisolone Phosphate 1% Moxifloxacin 0.5% Bromfenac 0.075% 5mL Sterile Ophthalmic Solution viii.Prednisolone Phosphate 1% Bromfenac 0.075% 5mL Sterile Ophthalmic Solution ix.Atropine Sulfate 0.01% 3.5mL Sterile Ophthalmic Solution x.Atropine Sulfate 0.025% 3.5mL Sterile Ophthalmic Solution xi.Atropine Sulfate 0.05% 3.5mL Sterile Ophthalmic Solution xii. Timolol 0.5% Bimatoprost 0.01% 5mL Sterile Ophthalmic Solution xiii. Timolol 0.5% Brimonidine Tartrate 0.1% Dorzolamide 2% 5mL Sterile Ophthalmic Solution xiv. Timolol 0.5% Brimonidine Tartrate 0.1% Dorzolamide 2% Bimatoprost 0.01% 5mL Sterile Ophthalmic Solution xv.Tropicamide 1% Phenylephrine HCI 2.5% 2mL Sterile Ophthalmic Solution xvi.Brimonidine Tartrate 0.1% Dorzolamide 2% 2mL Sterile Ophthalmic Solution xvii.Dexamethasone Phosphate 0.1% Moxifloxacin HCI 0.5% 1mL Sterile Ophthalmic Solution PF"
+        }
+      ]
+    },
+    {
+      "establishment_type": "Medical Device Manufacturer",
+      "observation_summary": "The inspection identified multiple deficiencies including failure to submit mandatory Medical Device Reports (MDRs) for adverse events and malfunctions, inadequate risk management procedures regarding post-market complaint evaluation, lack of validation and verification for design changes, insufficient CAPA procedures including failure to define statistical trending methods and inadequate scope of investigations, and inadequate finished device acceptance procedures failing to ensure compliance with device specifications.",
+      "observations": [
+        {
+          "full_details": "Specifically, the firm's finished device acceptance procedure, SOP-0008, titled \"Release of Materials: Components and Final Product,\" Revisions A-C, have not been defined and documented to ensure that finished devices were made in accordance with the specifications required by the Device Master Record. There are no final verification acceptance activities to address trigger cable length and critical dimensions. For example: a. LLG Serial Number 05-42340 was returned to the firm on 01/27/2015, under RMA 1623, for allegedly being very difficult to fire. Findings from RMA 1623 showed during the visual inspection that there was a missing screw in the hand piece, foam spring was not centered, and critical dimensions were not in specification. The LLG was authorized by quality to be released on 11/08/2012 via DHR 42340-A. b. LLG Serial Number 42-43139 was returned to the firm on 08/14/2014, under RMA 1062, for the allegation of current LLG keeps jamming. Findings from RMA1062 showed a bend in the LLG and trigger cable length not within specification. The LLG was authorized by quality to be released on 03/07/2013 via DHR 43139-E. c. LLG Serial Number 16-47441 was returned to the firm on 02/25/2014, under RMA-XMR-0521, for the allegation of firing intermittently. Findings from RMA-XMR-0521 found that the LLG Strain Relief had a defective electrical connector in addition the length of the electrical cable was not to specification. The LLG was authorized by quality to be released on 02/14/2014 via DHR 47441."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The inspection identified significant deficiencies in aseptic processing, including inadequate environmental monitoring and investigation of microbial excursions, failure to follow cleaning and disinfection procedures, and lack of cleaning validation. Furthermore, the firm failed to conduct dynamic smoke studies, lacked process validation for sterile suspensions, failed to thoroughly investigate out-of-specification results for sterility and potency, and had inadequate stability testing and raw material controls. Finally, product labeling was found to be non-compliant with 503B requirements.",
+      "observations": [
+        {
+          "full_details": "The labels of some of your outsourcing facility's drug products do not include information required by section 503B(a)(10)(A). A. The proportion or quantity of each inactive ingredient is not included on some labels. Examples include: GI Cocktail - Belladonna Alkaloids: Antacid: Lidocaine 35 mL Oral Bottle, Acetaminophen Oral 240mg/7.5ml Oral syringe, Magic Mouthwash - Lidocaine + Diphenhydramine + Antacid 5 mL Oral Syringe, Promethazine Topical Gel 25ml/ml 1 mL Topical Syringe, Simethicone 120 mg/1.8 mL Oral Syringe, Multivitamin + Iron 1 mL Oral Syringe, Multivitamin Oral 0.5 mL Oral Syringe. B. The dosage form of the drug is not included on some labels. Examples include: Neostigmine 5 mg/5 ml Single Use Syringe, Glycopyyrolate 1 mg/5 ml Single Use Syringe, Succinylcholine 200 mg/10 mL Single Use Syringe, GI Cocktail - Antacid:Lidocaine 3:1 40 ml Syringe, LET Gel 4%/0.1%/0.5% 3 mL Single Use Syringe. C. The required statements, 'This is a compounded drug' and 'Not for resale' are not included on some labels. Examples include: Rx (b) (6) Praziquantel - 5 mL, 20 mg/mL Suspension, Rx (b) (6) Progesterone 20 mg/0.5 mL Cream, Rx (b) (6) Acyclovir + Lidocaine - 5 gm, 5%/1% Lip Balm. D. Storage and Handling instructions are not included on some labels. Examples include: Rx (b) (6) Progesterone 20 mg/0.5 mL Cream."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Producer of Sterile Drugs",
+      "observation_summary": "The firm exhibits significant deficiencies in aseptic processing, environmental monitoring, and quality control. Key issues include inadequate cleanroom maintenance and certification, poor gowning and aseptic practices, lack of validation for sterilization and lyophilization processes, failure to perform required sterility and endotoxin testing, and a lack of investigations into out-of-specification results for distributed drug products.",
+      "observations": [
+        {
+          "full_details": "A. Your environmental monitoring procedure 'Environmental Testing' is deficient in that there is no scientific rationale to support the frequency and methodology of testing: 1. Monitoring of sterile compounding personnel is not performed at the completion of each aseptic operation. Gloved fingertip monitoring is only performed every (b) (4). 2. The ISO 5 cleanroom is used to produce sterile drug products on a (b) (4) basis; you have not performed viable air monitoring as part of the (b) (4) certification of the ISO 5 cleanroom additionally viable air monitoring is not performed during the production of sterile drug products. Your current viable air monitoring procedure is limited to the use of settle plates (b) (4). 3. There is no scientific rationale for the selection of surface and air sampling locations as part of the environmental monitoring program. According to the procedure '(b) (4)'. 4. Your firm does not perform non-viable air monitoring in the ISO 5 cleanroom during the production of sterile drug products. During the (b) (4) recertification (b) (4) (b) (4) out of specification particle counts were identified in the area of the room where the lyophilization process is performed and there is no physical separation between this area and the remainder of the room. 5. No leak tests have been performed on the HEPA filters located in the ISO 5 cleanroom where sterile drug products are produced. 6. From 6/21/2016 to 6/24/2016 we did not observed air monitoring in the ISO 5 cleanroom during aseptic operations or any other environmental monitoring to ensure aseptic technique. Furthermore, there is a lack of personnel monitoring for (b) (4) aseptic operations. B. There is no evidence that smoke studies were conducted under dynamic conditions within the ISO 5 clean room where sterile operations are performed. The sterile production area is not segregated from the rest of the ISO 5 room. C. The pressure differentials between the ISO 5 cleanroom area and the ISO 7 (b) (4) room are not continuously monitored. The pressure differential is only checked (b) (4) by your technician. Additionally, the pressure differential between the gown room and the ISO 5 clean room are not recorded. During observation of aseptic operations the pressure gauge monitoring pressure between the gowning room and the ISO 5 clean room was observed to fluctuate between (b) (4) and (b) (4) w.c. D. Between 6/21/16 and 6/24/16 the air return vents (b) (4) (b) (4) was observed to be partially obstructed by the table which holds the (b) (4) located on the south wall inside the ISO 5 cleanroom. Another cart containing a large number of supplies and containers in the same location on the outside of the wall was also observed partially obstructing air flow out of the ISO 5. Additionally, a shelving unit containing various supplies located on the west wall outside of the ISO 5 was observed in front of an air return vent also partially obstructing the air flow out of the ISO5."
+        }
+      ]
+    },
+    {
+      "establishment_type": "API Manufacturer",
+      "observation_summary": "The firm failed to follow quality unit responsibilities regarding the release of API batches without assurance of safety levels for impurities. Additionally, the firm failed to conduct thorough investigations into complaints regarding foreign particles in API batches and maintained a deficient quality system for approving and overseeing contract laboratories.",
+      "observations": [
+        {
+          "full_details": "The quality unit failed to provide adequate complaint investigations. For example, a. The complaint investigation associated to the presence of black particles during the use of (b)(4) API, batch (b)(4) (code (b)(4)) for drug product manufacturing failed to evaluate the reserve/retention samples and failed to require the black particles to the complainant to find the root cause. Neither the root cause was identified nor corrective and preventive actions were established. (b)(4) API batch (b)(4) was released for the U.S. market in (b)(4). b. The complaint investigation associated to the presence of foreign matters during the use of (b)(4) API, batch (b)(4) (code (b)(4)) for drug product manufacturing failed to evaluate the reserve/retention samples and failed to require the foreign matters to the complainant to find the root cause. Neither the root cause was identified nor corrective and preventive actions were established. (b)(4) API, batch (b)(4) (code (b)(4)) was released for the U.S. market in (b)(4)."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Cheese Manufacturer",
+      "observation_summary": "The inspection identified significant deficiencies in facility design, sanitation, and hygiene practices. Key issues include cross-contamination risks due to shared equipment and pathways between raw and ready-to-eat areas, failure to adhere to aging requirements for non-pasteurized cheese, inadequate pest control, poor personal hygiene and garment practices, and insufficient hand-washing facilities.",
+      "observations": [
+        {
+          "full_details": "On 11/5/10, we observed an employee using his hands to splash water from the utensil sanitizing bath onto his apron, he then returned to mixing cheese with his bare hands. On 11/9/10, we observed an employee walking outside the processing/packaging area without removing his apron, and then he returned to packaging aged, ready-to-eat cheese without properly sanitizing his apron."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Sterile Manufacturer",
+      "observation_summary": "The inspection identified multiple deficiencies related to aseptic processing, equipment qualification, environmental monitoring, and data integrity. Key issues include inadequate airflow visualization and qualification for filling lines, poor maintenance and cleanliness of cleanroom surfaces, insufficient environmental monitoring procedures, and a failure to review electronic audit trails for batch release.",
+      "observations": [
+        {
+          "full_details": "Specifically, A) The swab sampling instructions for environmental monitoring of the (b)(4) that is associated with the Grade B facility cleanroom # (b)(4) is not sufficiently detailed in order to ensure consistent sampling of the area. According to the 'Microbiological Monitoring of Surface of Grade-B by (b)(4) Plates,' 0310-SOP-QC-00006-40 the (b)(4) are to be surface sampled within the (b)(4). The (b)(4) is utilized to transport material from the lower grade classifications into the Grade B cleanroom of the (b)(4) Filing Line (Equipment ID # (b)(4)). According to the 'Microbiological Monitoring of Surface of Grade-B by (b)(4) Plates,' the (b)(4) are to be surface sampled (b)(4). The swab sample location lacks a detailed description to ensure consistent sampling of the area to provide meaningful data. B) The firm's procedures do not ensure that all ancillary equipment located in controlled classified Grade B cleanroom are routinely surface sampled. These ancillary equipment that are categorized as 'non-routine' and located in Grade B controlled classified areas include but are not limited to, (b)(4) tables, (b)(4) working surfaces, and (b)(4) surfaces of (b)(4). According to the SOP #0310-SOP-QC-00006, 'Environmental Monitoring Program', the equipment is surface sampled (b)(4) and the ancillary equipment selected for sampling is (b)(4) and not tracked, so the firm does not know which ancillary equipment has been sampled and which has not, at any given time. C) According to the procedure titled 'Operation of Non Viable Particle Counter (NVPC)' 0310-SOP-MFG-00099, any excursion that transpires during an intervention is 'not to be considered' for a deviation. The procedure instructs for the filling machine to be stopped and resume activity 'after counts comes within limit.' D) The Grade B facility cleanroom # (b)(4) is not monitored during production or routine conditions with a suitable sample size to capture any increase in contamination or environmental deterioration that may affect sterile drug product quality. The procedure titled 'Non-Viable Particle Monitoring of Grade-A and Grade B by APC' 0310-SOP-QC-00006-35, indicates that the total air volume sampled is (b)(4) m3 for the approximately (b)(4) Grade B non-viable particulate sampling locations within the controlled classified area."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Tablet Manufacturer",
+      "observation_summary": "The firm failed to thoroughly investigate unexplained discrepancies and out-of-specification results, with evidence of personnel purposefully recording inaccurate data. Laboratory controls were deficient, including unreported OOS results, lack of original data retention, and inadequate audit trail reviews. Batch records were incomplete and lacked proper oversight, and document reconciliation procedures were absent. Additionally, cleaning procedures for equipment were insufficient, and specifications for in-process testing lacked scientific support.",
+      "observations": [
+        {
+          "full_details": "The person listed in the 'Done By' column for in-process checks does not perform all tests, does not record the data, and is not always present when data is acquired. Their name is added to the 'Done By' column by the person signing the 'Checked By' column."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Producer of Sterile Drug Products",
+      "observation_summary": "The firm failed to maintain an aseptic environment, evidenced by persistent fungal contamination in clean rooms, lack of dynamic smoke studies, and inadequate controls during facility construction. Additionally, the firm operated during pressure differential failures, failed to prevent cross-contamination between hazardous and non-hazardous drug production, and exhibited poor sanitation and pest control practices.",
+      "observations": [
+        {
+          "full_details": "On 07/12/16, dead insects and fungal growth were found in the ISO 7 annex room during cleaning. This area had been previously cleaned on 07/11/16. The corrections taken by your firm to address this finding did not include an evaluation of your pest control and disinfection programs."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Own Label Distributor",
+      "observation_summary": "The firm failed to submit quarterly and annual periodic adverse drug experience reports within the required timeframes and failed to submit required annual reports for multiple products. Additionally, the firm lacks written procedures for the reporting of postmarketing adverse drug experiences to the FDA.",
+      "observations": [
+        {
+          "full_details": "Your firm has not developed written procedures for the reporting of postmarketing adverse drug experiences to FDA. For example, standard operating procedure, 'SOP No. QLT-001-0, Handling Customer Complaints and Inquiries,' Section 4.0, describes how it is the responsibility of the Chief Scientific Officer or regulatory agent designee to file 15-Day Alert and Periodic ADE Reports. However, the SOP does not describe the procedure for filing the Postmarketing Adverse Drug Experience Reports or Annual Reports with the FDA."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Producer of Sterile Drug Products",
+      "observation_summary": "The firm failed to reject drug products with visible contamination, maintained inadequate cleaning and sanitation of sterile processing areas, lacked validated aseptic processes and sterilization methods, and failed to perform required environmental monitoring and stability testing for sterile injectable products.",
+      "observations": [
+        {
+          "full_details": "1. The (b)(4) sterilization process for producing batches of injectable product has not been validated. The firm has no documentation to qualify the (b)(4) used with regards to bacterial retention, extractables, and hardware compatibility. The firm has no documentation to challenge the bacterial retention of the (b)(4) with challenge organisms or bioburden quantity. Dry ingredients used may be non-sterile such as the Bethamethasone Phosphate USP used to manufacture Bethamethasone 12 mg/mL Injectable. The bioburden for these ingredients is not tested for by the firm. 2. The firm has not validated the (b)(4) sterilization processes such as those used to process Triamcinolone Acetonide 60 mg/mL Inj Susp lot 01152013@12. 3. The firm has not validated bulk sterilization processes by (b)(4) such as the bulk sterilization of Methylprednisolone Acetate 60 mg/mL Inj Susp (including lot 02092012@3) prior to filling. 4. The firm has not validated the sterilization process for components such as the stoppers used for sterile injectable vials by (b)(4). 5. The firm has not validated the sterilization / (b)(4) process for any vials processed at this site."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Producer of Non-Sterile Drug Products",
+      "observation_summary": "The firm failed to provide adequate containment, segregation, and cleaning procedures for the production of highly potent and hazardous drug products, leading to a risk of cross-contamination. Specifically, the firm lacks dedicated areas for hazardous drug compounding and fails to change gowns between the production of potent drugs and other products.",
+      "observations": [
+        {
+          "full_details": "You produced highly potent and hazardous drugs without providing adequate containment, segregation, cleaning of utensils and cleaning of personnel to prevent cross-contamination. Specifically, your operations include the preparation of over (b)(4) non-sterile drug products in an approximately (b)(4) period, from (b)(4) to (b)(4). During this period, you compounded over (b)(4) highly potent drugs such as testosterone, progesterone, and estrogen. For example, 'RX# (b)(6) Bi-Est (8:2) - Progesterone - Testosterone 5 - 60 - 2.25 mg/gm (b)(4)'. You also compounded over (b)(4) hazardous drugs such as Triiodo-L-Thyronine (T3) and Thyroxine(L) (T4). For example, 'RX# (b)(6) Liothyronine Sodium (T3) 1:1000 (0.1%)/(b)(4)'. a) Your firm does not have controls in place to prevent contamination of the drug production area and cross-contamination of other drug products with highly potent and hazardous drugs, such as dedicated or segregated areas. All non-sterile drugs are compounded using (b)(4) work benches. These benches do not allow for the containment of (b)(4) bulk drug substances used to compound these drugs. b) Your firm does not replace gowns between producing a highly potent and/or hazardous drug product and continuing to compound other drug products. This is a repeat observation."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Producer of sterile drug products",
+      "observation_summary": "The firm failed to maintain adequate sterility and environmental controls in aseptic processing areas. Issues included the use of non-sterile cleaning materials, insufficient disinfectant contact times, and inadequate remediation of recurring microbial contamination. Furthermore, personnel engaged in poor aseptic practices such as blocking first-pass air, improper gowning, and failing to sanitize gloves after touching non-sterile surfaces. Equipment was found to be dirty or difficult to clean, and media fills and smoke studies were not representative of actual dynamic production conditions.",
+      "observations": [
+        {
+          "full_details": "On December 7, 2022, the non-beta lactam drug Caspofungin was produced after several beta-lactam products (Cefazolin, Ertapenem, Meropenem). Spillage occurred on the ISO 5 work surface and was not deactivated; the technician merely wiped the surface with a non-sterile wipe and sterile (b) (4). The firm lacks a specific process to deactivate and remove beta-lactam spillage."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Drug Manufacturer",
+      "observation_summary": "The inspection revealed significant deficiencies in the firm's sterile compounding operations, including inadequate sterility and pyrogen testing, lack of validation for sterilization and aseptic filling processes, and poor environmental monitoring. Furthermore, the firm failed to maintain adequate stability studies, lacked proper component testing and storage controls, failed to report adverse drug experiences to the FDA, and maintained incomplete master and batch production records.",
+      "observations": [
+        {
+          "full_details": "Specifically, the firm does not conduct any type of analysis on any of their active pharmaceutical ingredients received for drug processing. Instead, the firm only accepts a Certificate of Quality or Certificate of Assurance from their supplier in lieu of testing."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The inspection revealed significant deficiencies in aseptic processing, environmental monitoring, laboratory controls, and facility maintenance. Key issues include inadequate cleaning and disinfection practices, failure to validate sterilization processes, poor cleanroom design, lack of scientific justification for beyond-use dates, and insufficient investigations into out-of-specification results. Additionally, the firm failed to maintain proper environmental conditions, lacked adequate space to prevent mix-ups, and failed to include required labeling information on drug products.",
+      "observations": [
+        {
+          "full_details": "Labels do not include the required statement 'This is a compounded drug' for various products, including Fentanyl Citrate, Heparin Sodium, and Calcium Chloride."
+        }
+      ]
+    },
+    {
+      "establishment_type": "OTC Drug and Device Manufacturer",
+      "observation_summary": "The inspection revealed systemic failures across multiple quality systems, including inadequate CAPA and OOS investigations, lack of process validation for sterilization and manufacturing, poor environmental and microbiological controls, inadequate training and staffing, and failure to follow established SOPs for product release, stability testing, and equipment maintenance.",
+      "observations": [
+        {
+          "full_details": "Stability failures were not used to adjust expiration dates. There is no documentation defining how products are categorized into families."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Manufacturer",
+      "observation_summary": "The inspection identified significant deficiencies in the firm's quality management systems, specifically regarding medical device reporting (MDR) accuracy, complaint handling, design controls, corrective and preventive action (CAPA) processes, risk management, supplier oversight, and employee training. Multiple observations were noted as repeat issues from the previous inspection, including failures to properly report adverse events, inadequate complaint investigations, insufficient design verification, and lack of effective CAPA implementation and trending.",
+      "observations": [
+        {
+          "full_details": "Procedures for training and identifying training needs have not been adequately established. Specifically, a) You failed to adequately train four Hospira Global Product Safety and Complaint employees. On 2/5/2013, I (JAV) found that four employees [(2) Global Product Team Managers and (2) Regulatory Reporting Specialists] who are designated to monitor teams complaints to ensure complaint handling and medical investigations are being conducted properly; and to coordinate data for US FDA {respectively} are not trained to the 'Medical Device Complaint Investigations Procedure' LC-QA-QCP.05.017 procedure. b) You failed to train your firm's Lead Director of Customer and Supplier Quality to the firm's current LC-QA-QS.05 'Exception Report ER and CAPA Management Policy.' According to the director's position description (Director Quality - Supplier Quality, TPM Quality and One2One Quality dated March 2012), the director is responsible for the continuous improvement of Hospira's global Third Party Manufacturing Quality program. On 2/5/2013, the employee and her team were found to be conducting corrective and preventive actions for the previous FDA inspection conducted 6/19/2012 - 7/13/2012 (FDA 483 observation # 5 regarding supplier controls) and had not placed all of these corrective and preventive actions in Hospira's CAPA system."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The inspection revealed significant deficiencies in aseptic processing, environmental monitoring, laboratory controls, and labeling requirements. Key issues included poor aseptic technique by personnel, lack of media fill validation, inadequate equipment qualification for sterilization, failure to test drug products for potency and preservative content, improper investigation of production errors, deficient environmental monitoring of clean rooms, and missing mandatory labeling information on compounded drug products.",
+      "observations": [
+        {
+          "full_details": "Specifically, your pharmacy technicians processing drug products intended to be sterile do not always exhibit good aseptic techniques. Also, procedures for media fills and (b)(4) tests are not adequately written and followed. On 3/17/2014, we observed in clean room (b)(4) on the work bench where aseptic processing occurs, a technician reaching over approximately forty open and previously sterilized 10mL glass vials continuously while filling a tray of approximately (b)(4) vials for Dexamethasone Acetate 8mg/mL; lot #86972. On 3/18/2014, we observed in the clean room (b)(4), a technician pull a plastic crate (filled with sterile syringe packages) from a shelf located six inches off the ground and place it on the work bench where aseptic processing occurs while preparing to process Glycopyrrolate 0.2mg/mL syringes; lot #87014. We observed the same technician (with gloved hands) pick up a hand-set and dial a hand-held phone inside the aseptic processing area during the processing of the same Glycopyrrolate drug product. On 3/18/2014, your pharmacy technician was observed processing Glycopyrrolate 0.2 mg/mL syringes (lot #87014) (b)(4) intended to sterilize the drug product. After the processing, the technician used a 100ml syringe with a (b)(4) to the (b)(4) of the (b)(4). The technician did not record a quantitative pressure. On 3/19/2014, your Director of Quality stated your firm has not performed any media fills to simulate the process of sterilizing and filling over 116 different drug product formulations intended to be sterile injectable human drugs. Also, there is no written procedure for conducting media fills to simulate the process of sterilizing and filling. Your firm has not conducted an equipment qualification to show that autoclaves used to sterilize rubber stoppers and dry-heat oven used to de-pyrogenate glassware achieve appropriate log reduction of microbes or endotoxins. Your firm only conducts run verification for each autoclave cycle sterilization of rubber stoppers using biological indicators and verification of each de-pyrogenation cycle using endotoxin standard ampules without qualifying the equipment. Also, materials such as aluminum foil over-wrap covering de-pyrogenated vials and steel trays holding depyrogenated vials are hand-carried through the clean room to the work bench where aseptic processing occurs without further aseptic protection."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Producer of Sterile and Non-Sterile Drug Products",
+      "observation_summary": "The firm failed to monitor pressure differentials between aseptic processing areas of different air classifications during sterile drug production.",
+      "observations": [
+        {
+          "full_details": "Pressure differentials between the (b)(4) Room (ISO 7) and (b)(4) Room (ISO 8) with different air classifications were not monitored prior to or during sterile drug production. This is a repeat observation."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Medical Device Manufacturer",
+      "observation_summary": "The inspection revealed significant deficiencies in validation processes for sterilization and product changes, inadequate root cause analysis in complaint investigations, and poor documentation practices in Device History Records (DHR). Furthermore, the firm lacks statistical rationale for sampling plans, fails to properly trend unscheduled maintenance, has ineffective internal quality audits, and lacks necessary validation and security controls for software systems used in the quality system.",
+      "observations": [
+        {
+          "full_details": "There is no documented statistical rationale for the sampling plans used in component manufacturing in-process inspection, or Intran Plus Catheter Final Inspection. Specifically, A. Lot 111409 consisted of the manufacture of (b)(4) component parts (b)(4) of that (b)(4) devices were selected for sampling with no statistical rationale; B. IUP lots are broken down into batches of (b)(4) for sampling purposes. The number of units sampled is always (b)(4). There is no statistical justification for sampling (b)(4) devices. (Lots 111757, 111758); C. (b)(4) However, the process qualification failed to explain the statistical rational behind the selection of (b)(4) test units used for the (b)(4) edistec."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Drug Manufacturer",
+      "observation_summary": "The inspection revealed significant deficiencies in quality unit oversight, aseptic processing, environmental monitoring, equipment validation, and data integrity. Key issues included inadequate investigation of particulate contamination, failure to validate aseptic filling and lyophilization processes, lack of scientific rationale for environmental monitoring and decontamination strategies, insufficient operator training, and poor documentation practices in batch records and quality investigations.",
+      "observations": [
+        {
+          "full_details": "Some procedures reviewed are not reflective of the firm's current practice. For example: The procedure entitled: Operation of the (b) (4) effective 10/13/09, allows operators the option to (b) (4) of drug product. The last lot of product, Cerezyme A8062, run using indirect filtration was on 11/3/08. The procedure entitled: Preventative Maintenance Process Procedures Using the (b) (4) Computerized maintenance Management System at Allston Landing, PM-023-70 was changed effective 2/11/09 to remove the requirement that quality needs to review preventative maintenance documents. The procedure for Maintenance of the (b) (4) Lyophilizer and (b) (4) effective 10/6/09 (b) (4) requires quality to perform final review of all maintenance logs. Quality review of the lyophilizer maintenance documents was discontinued as of January 2009 but the individual equipment procedure has not yet been updated. A cleaning-in-place procedure used a (b) (4) check to ensure that water was flooding the pipes. The (b) (4) check was not incorporated into the SOP. After a (b) (4) assay was performed in the QC lab, the data was compared against historical data in the Allston Landing (b) (4). This practice of trending results was not incorporated into the SOP."
+        }
+      ]
+    },
+    {
+      "establishment_type": "503B Outsourcing Facility",
+      "observation_summary": "The inspection identified significant deficiencies in laboratory controls, including failure to perform dissolution and impurity testing for finished drug products, and inadequate sterility testing methods that fail to account for the interior of the pellets. Furthermore, the facility failed to maintain certified aseptic processing environments, omitted required information from drug product labels, and failed to report compounded products to the FDA as required by law.",
+      "observations": [
+        {
+          "full_details": "The following information is not found on your drug product labels: a) The statement 'This is a compounded drug'; b) The phone number of the outsourcing facility; c) The storage and handling instructions. Examples of your drug product labels that do not contain this information: Testosterone Pellets 37.5mg, Testosterone Pellets 50mg, Testosterone Pellets 100mg, Testosterone Pellets 225mg."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The inspection identified significant deficiencies in facility maintenance and sanitation, including pest infestation and the use of non-cleanable materials in classified areas. Aseptic processing controls were inadequate, specifically regarding sterilization validation, smoke studies, and the use of non-sterile equipment. Additionally, the firm failed to investigate production discrepancies, maintained inaccurate batch records, and lacked formal training procedures for personnel performing environmental monitoring.",
+      "observations": [
+        {
+          "full_details": "Your firm failed to investigate a discarded vial in your media fill for the preparation of Lidocaine HCI/Phenylephrine HCI (P-F) 1%/1.5% Injectable on 3/24/2016 Lot Number (b)(4)."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Manufacturer",
+      "observation_summary": "The inspection revealed significant deficiencies in data integrity, including lack of audit trails and unauthorized access to electronic systems. Document control processes were inadequate, with uncontrolled printing and disposal of GMP records. Investigations into discrepancies, invalid assays, and environmental deviations were insufficient or lacked scientific rationale. Quality unit responsibilities for adverse events were not defined in writing. Equipment validation was lacking for contact surfaces. Test procedures were scientifically unsound, and facility maintenance and alarm monitoring procedures were not followed or adequately established. Finally, sanitization procedures and schedules were not validated for effectiveness.",
+      "observations": [
+        {
+          "full_details": "A. The (b)(4) reference standard used for determination of (b)(4) during in process, release, and stability testing of Nabi-HB performed per SOP QC2100 was qualified using the same method (SOP QC3182) that was found to be inadequate in Observation 8 on the March 2016 FDA 483. For example, the reference standard used for testing of Nabi-HB filled, unlabeled vial lot 170125 (released as packaged vial lot 170124 on February 2, 2018) was qualified using SOP QC3182. B. System suitability criteria for the (b)(4) system have not been established for method QC3207 '(b)(4).' C. (b)(4) of (b)(4) is permitted. Procedures describing when (b)(4) can be performed and how to do (b)(4) have not been established. D. The microbiology laboratory lacks data to support the minimum time (b)(4) and incubation conditions of (b)(4)\u00b0C for recovery of yeast and mold organisms during routine environmental monitoring. E. Damage to (b)(4) and air bubbles between the (b)(4) and the (b)(4) were observed for 5 of (b)(4) WFI samples read on April 9, 2018. F. Qualification of (b)(4) workbooks F-SAF-3049a through f used to perform calculations during method validation and reference standard qualification is inadequate as follows: i. The mathematical equations (i.e., calculations) used to develop the (b)(4) formulas were not documented, reviewed, or approved. ii. The outputs of the (b)(4) formulas have not been checked for accuracy against user-specified calculations."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Shell egg Producer",
+      "observation_summary": "The firm failed to implement and follow its written Salmonella Enteritidis (SE) prevention plan, including deficiencies in cleaning and disinfection, biosecurity measures, and environmental sampling methods. Additionally, the firm lacked appropriate rodent monitoring, failed to record necessary timestamps and farm identification on required documents, and did not have the SE plan signed by the administrator.",
+      "observations": [
+        {
+          "full_details": "Your written SE plan does not carry the signature(s) and not the initials of the person(s) who administer the plan. Specifically, your (b)(4) SOP.OPS.PRD 7 Salmonella Prevention Program Revised 4/1/2011 is not signed by your SE Plan administrator."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Producer of Sterile Drug Products",
+      "observation_summary": "The firm failed to conduct necessary sterility, endotoxin, and potency testing for aseptically processed injectable drugs. Aseptic processing procedures were inadequate, lacking media fills, proper environmental controls, and validated cleaning protocols. Environmental and personnel monitoring were insufficient, and there was a complete lack of stability data for products with assigned beyond-use dates. Additionally, written procedures for equipment maintenance and decontamination of hazardous spills were absent.",
+      "observations": [
+        {
+          "full_details": "The firm fails to ensure that each batch of aseptically processed injectable drug products, which it distributes, passes sterility and endotoxin testing before distribution. The last sterility testing was conducted on the product Trimix on July 25, 2008. No endotoxin testing has ever been conducted."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The firm failed to perform potency testing for finished drug products and bulk materials, lacked adequate laboratory controls for incoming components, and failed to maintain a validated stability program. Additionally, the firm did not follow aseptic processing procedures, failed to perform annual visual examinations of reserve samples, and did not investigate particulate matter found during visual inspections of finished drug products.",
+      "observations": [
+        {
+          "full_details": "a. Your established testing specification for Sarracenia Purpurea 0.17g/ml injection drug product failed to provide adequate stability data to support the product for conformance to any established specification throughout the life cycle and to support the labeled 12-month expiry date. b. The test methods used to determine the stability of Sarracenia Purpurea 0.17g/ml finished drug product are not stability indicating in that they are not capable of identifying potential degradants and impurities in the Sarracenia Purpurea Bulk Distillate or the finished drug product. c. You failed to provide adequate data to support your 12 months retest date for the Bulk Sarracenia released drug product. For example, Bulk Lot (b)(4) was produced on (b)(4), and assigned a (b)(4) retest date of 31st May 2024. This bulk lot was used in the compounding of Final drug product Sarracenia Purpurea injection 0.17g/ml lot (b)(4) on 15th February 2024 with an expiration date of 28th February 2025. d. You store stability samples for Sarracenia Purpurea 0.17g/ml injection finished drug product in a Stability Cabinet located in a (b)(4) of your warehouse (b)(4). You failed to monitor the temperature or humidity of this cabinet. You did not have any data logger placed in the stability cabinet or records for the temperature or humidity of the cabinet."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Producer of Non-sterile Drug Products",
+      "observation_summary": "The firm failed to provide adequate containment and cleaning procedures for hazardous drug production, leading to potential cross-contamination. Additionally, the firm did not verify the quality of water used in drug production and failed to maintain the facility in a good state of repair, specifically regarding damaged ceiling tiles in production areas.",
+      "observations": [
+        {
+          "full_details": "The current cleaning process is deficient and does not provide assurance that hazardous drug product residue and cleaning agent residue are adequately removed from reusable glassware and utensils used in production of both non-hazardous and hazardous drug products: On 03/30/2026, following the production of non-sterile hazardous drug Hydroxyurea 100 mg/mL Oral Suspension Lot HU10010330260 (Beyond Use Date (BUD): 04/29/26), the reusable utensils (such as mortar and pestle and graduated cylinders) and a disposable weigh boat, utilized for production, were cleaned with (b)(4) liquid and a reusable (b)(4); No deactivating agent is currently employed to ensure the inactivation and removal of hazardous drug residue from product contact surfaces and utensils. The reusable washed utensils, such as mortar and pestle, and the disposable weigh boat, that were used for hazardous drug production, were subsequently observed as being placed in a shared bin containing separate utensils, such as mortar and pestle, which are used for non-sterile non-hazardous production activities. A technician was observed washing a disposable weigh boat that had been used to collect powder from Hydroxyurea Capsules USP, 500 mg, which was subsequently used in the production of non-sterile hazardous drug Hydroxyurea 100 mg/ml Oral Suspension Lot HU10010330260, and placing it in the same container containing utensils such as mortar and pestles used for non-hazardous production activities. Graduated cylinders, used during production of Hydroxyurea 100 mg/ml Oral Suspension Lot HU10010330260, were returned to storage in a closed cabinet immediately after washing, while water droplets remained visible on the cylinders."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The firm failed to conduct adequate investigations into environmental monitoring excursions, out-of-specification results, and customer complaints. Production and process controls were deficient, including lack of validation for sterilization and aseptic processes, inadequate equipment design and maintenance, and poor training of personnel. Quality control oversight was insufficient, and the firm failed to follow established procedures for cleaning, gowning, and stability testing, leading to potential contamination and product quality risks.",
+      "observations": [
+        {
+          "full_details": "Procedures for the use of cleaning agents are inadequate, and cleaning agents are used contrary to manufacturer directions. Equipment is stored uncovered in unclassified areas."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Manufacturer and Repacker",
+      "observation_summary": "The inspection identified multiple deficiencies in sanitation and hygiene practices, including inadequate cleaning procedures for equipment, improper use of sanitizing agents, poor hand-washing compliance, lack of accessible hand-washing facilities, failure to use effective hair restraints, and lack of protective lighting over exposed food.",
+      "observations": [
+        {
+          "full_details": "On 03/31/09, an employee with facial hair was observed packing ready to eat veggie chips into plastic containers in the Packaging Department without a hair restraint for his facial hair. On 03/31/09, the manager who accompanied us on the walkthrough of the entire facility did not wear a hair restraint for his facial hair. The walkthrough included the Roasting Room and Packaging Department where ready to eat nuts, candy and snacks were being processed and repacked. The same manager was noted in the processing area without a hair restraint for his facial hair on 04/02/09 and 04/06/09. On 03/31/09, an employee packing ready to eat veggie chips into plastic containers in the Packaging Department failed to wear a hair net effectively in that the hairnet only covered the top of his head and the hair below the hair net was not restrained. On 04/06/09, three employees and a manager in the Packaging Department failed to wear a hair net effectively in that the hairnet only covered the top of their heads and the hair below the hair net was not restrained. Two of the employees were noted packing ready-to-eat dried berries and chips into plastic containers and the other employee was noted cleaning in the Packaging Department by the bulk packing line."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The inspection identified significant deficiencies in aseptic processing, environmental monitoring, quality control, laboratory testing, facility design, training, and gowning practices. Key issues include poor operator technique, inadequate smoke studies, lack of media fills, insufficient environmental and personnel monitoring, failure to perform 100% visual inspection of sterile products, inadequate laboratory release testing, lack of written procedures for sampling and testing, improper ventilation design, and inadequate training and gowning protocols.",
+      "observations": [
+        {
+          "full_details": "(A) The firm's aseptic gowning qualification program does not include assessment of the ability of the cleanroom operator to maintain the quality of the gown after performance of gowning procedures. (B) The firm does not have a training program for the collection of personnel monitoring samples. (C) The firm does not have a training program for reading culture media plates."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Combination Drug/Device Manufacturer",
+      "observation_summary": "The inspection revealed significant deficiencies in the firm's quality systems, including failure to thoroughly investigate manufacturing defects and product complaints, inadequate process controls and validation, insufficient statistical assessments, and poor design controls for the EpiPen and other products. Furthermore, the firm demonstrated inadequate laboratory controls, failures in aseptic processing and sterility testing, and a lack of proper training for personnel involved in critical manufacturing and inspection tasks.",
+      "observations": [
+        {
+          "full_details": "The design inputs/requirements of the EpiPen, EpiPen Jr., and (b)(4) products are not appropriate for the intended use of the products in regards to the reliability of the delivery system. The reliability inputs/requirements of the device according to your PRD/TRD 16-001 Rev 1 do not include a system level reliability design input/requirement. Your inputs/requirements list an AQL (b)(4) for critical tests, which equates to establishing a certain confidence of no more than (b)(4) failures per (b)(4) products. (b)(4) failures of delivered dose, or other critical tests, per (b)(4) EpiPen, EpiPen Jr., or (b)(4) products does not give assurance of the level of reliability commensurate with the risk of failure of a critical test as defined by your firm (e.g. delivered dose, (b)(4), etc.). Your pharmaceutical / drug delivery performance inputs/requirements list the inputs/requirements for certain essential performance inputs/requirements being specified to an AQL of (b)(4), which establishes a certain confidence of no more than (b)(4) failures of an essential performance input/requirement, such as (b)(4), per (b)(4) products. No rationale is provided for the acceptability of these design inputs/requirements based on the emergency use, life-saving intended use of the product. The design inputs/requirements of the EpiPen, EpiPen Jr., and (b)(4) are conflicting. In PRD/TRD 16-001 Rev 1 the design inputs/requirements related to the 'Pharmaceutical / drug delivery performance' of the EpiPen, EpiPen Jr., and (b)(4) have specifications that are outside of the principal design attributes listed. As an example, the principal design attribute for the EpiPen for dose volume is (b)(4) mL. However, under input/requirement the delivered dose volume for the EpiPen is described as (b)(4)-(b)(4) mL @ AQL (b)(4), Not less than (b)(4) or greater than (b)(4) mL at AQL (b)(4). The design inputs/requirements of the EpiPen, EpiPen Jr., and (b)(4) do not directly trace to a risk assessment of the product. It is unclear if the specifications listed under the 'Must' column of the document titled PRD/TRD 16-001 Rev 1 are appropriate for the intended use of the device and the user/patient needs, especially considering that many of the specifications are split into different levels of acceptability based on the confidence of a sampling plan. Design inputs/requirement specifications of the EpiPen, EpiPen Jr., and (b)(4) utilize AQLs to describe the necessary confidence level associated with each range of a specification; however, AQLs do not consider the needs of the user/patient. As an example, in PRD/TRD 16-001 Rev 1 the (b)(4) input/requirement specification is described with two different AQLs for two ranges of values associated with (b)(4). Your firm has not established design inputs/requirements regarding the ability of the device to successfully inject through clothing as specified by the intended use of the product as defined by your firm's Injection Sites and Site Condition of the PRD/TRD 16-001 Rev 1 document."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The inspection revealed significant deficiencies in the firm's quality systems, including failure to thoroughly investigate environmental monitoring excursions and nonconformances, inadequate personnel training for sterile processing, and deficient control systems for building monitoring alarms. Furthermore, the facility lacks proper contamination prevention measures in material flow, inadequate environmental monitoring programs, insufficient sterility testing, improper gowning practices, and failures in labeling and batch record documentation.",
+      "observations": [
+        {
+          "full_details": "The following information is not found on some of your drug product labels, as required by 503B(a)(10)(A): 1. The date that the drug was compounded. 2. The inactive ingredients, identified by established name and the quantity or proportion of each ingredient. The following information is not found on the container labels for products you produce, as described in 503B(a)(10)(B): 1. Information to facilitate adverse event reporting: www.fda.gov/medwatch and 1800FDA1088. Examples of drug product labels that do not contain this information include: Magnesium Sulfate 2 g in 50 mL 5% Dextrose Injection USP; Vancomycin HCI 1.25g in 250 mL 0.9% Sodium Chloride Injection USP; Diltiazem 250mg in 250 mL 5% Dextrose Injection USP; niCARdipine 125 mg in 250 mL 0.9% Sodium Chloride Injection USP; OxyTOCIN 20 units in 1000 ml Lactated Ringer's Injection USP; Potassium CHLORide 20 mEq and Lidocaine HCI 10 mg added to 5% Dextrose 100 mL; Vasopressin 100 units added to 100 mL 0.9% Sodium Chloride Injection USP; Vasopressin 60 units added to 100 mL 5% Dextrose Injection USP; Calcium GLUCOnate 1g in 0.9% Sodium Chloride Injection USP; Potassium CHLORide 40 mEq added to 0.9% Sodium Chloride 500 mL. For purposes of 503B(a)(10)(B) container labeling, the clear plastic bag (e.g., (b)(4) Overwrap) enclosing some of your products should be considered the 'container' for purposes of this requirement and bear the information required by 503B(a)(10)(B)."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Shell Egg Producer",
+      "observation_summary": "The firm failed to prevent pest entry into poultry houses, did not perform required SE environmental testing within the specified timeframe after molting, failed to eliminate potential pest harborages by removing vegetation, lacked a written SE prevention plan for a significant period, and failed to include required times and signatures/initials on monitoring and refrigeration records.",
+      "observations": [
+        {
+          "full_details": "Specifically, refrigeration, rodent, and fly monitoring records do not include your initials or signature."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The firm failed to ensure finished drug products met specifications prior to release, lacked appropriate stability data for expiration dating, utilized scientifically unsound potency specifications, failed to document batch record changes, and had deficient product labeling and environmental monitoring systems.",
+      "observations": [
+        {
+          "full_details": "The containers of your outsourcing facility's drug products do not include information required by section 503B(a)(10)(B). For example, your container labels do not include the following information: Directions for Use - Storage conditions, Dosage form and route of administration per 503B(a)(10)(B)(iii)."
+        }
+      ]
+    },
+    {
+      "establishment_type": "Outsourcing Facility",
+      "observation_summary": "The inspection identified multiple deficiencies including inadequate aseptic processing and material transfer procedures, failure to provide scientific rationale for changes in stability specifications, inadequate stability testing programs for finished drug products, failure to reject drug products that did not meet specifications, poor control over labeling storage, and inadequate quality control unit oversight regarding documentation and CAPA effectiveness.",
+      "observations": [
+        {
+          "full_details": "A. Your firm's compounding technician was observed removing the bottle of sterile (b) (4) from the inside of the ISO 5 LAFH, to the outside within the ISO 7 Cleanroom to disinfect their sterile gloves and failing to re-disinfect the bottle of sterile (b) (4) prior to returning it to the ISO 5 LAFH. Your firm's procedure Aseptic Material Transfer from CHC Area into Classified Areas, HOU-OPS-017, Revision 5 fail to adequately define a method for the transfer of sterile (b) (4) bottles into and out of the ISO 5 LAFH. B. Your firm's compounding technicians were observed using hard to clean and disinfect pen within the ISO 7 Cleanroom to write within each production batch record that has the potential of being source of microorganism contamination transfer from the technician's sterile gloves into the ISO 5 LAFH. C. Your firm's dynamic ISO 5 LAFH smoke studies were found to be inadequate. Your firm's technician controlling the smoke wand failed to position the wand such that the smoke pattern provided adequate coverage to assess simulated aseptic production manipulations and interventions being performed by the aseptic processing technician impacting unidirectional laminar airflow within the ISO 5 LAFH. D. During review of your firm's ISO 5 LAFH dynamic smokes, your firm's technicians performing and recording the studies within your ISO 7 Cleanroom, failed to wear adequate gowning as required by the firm's written procedure. Recording technicians' facial hair and skin were exposed within proximity of the ISO 5 LAFH resulting in a potential of introducing microbiological contamination into the ISO 7 Cleanroom and ISO 5 LAFH."
         }
       ]
     }
