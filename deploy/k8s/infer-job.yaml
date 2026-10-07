@@ -3,12 +3,14 @@
 # Workload Identity SA, GCS FUSE PVC. Paths are on the mount.
 #
 # Expected bucket layout (PVC ml-object-store):
-#   gs://bucket/registry/model-v1/                  -> /gcs-mount/registry/model-v1/
-#   gs://bucket/evaluation/fda_observations.json    -> /gcs-mount/evaluation/fda_observations.json
+#   gs://bucket/registry/${MODEL_RUN_ID}/              -> /gcs-mount/registry/${MODEL_RUN_ID}/
+#   gs://bucket/${INPUT_PATH}                          -> /gcs-mount/${INPUT_PATH}
 #   gs://bucket/evaluation/predictions-${RUN_ID}.json  written by this Job
 #
-# Copy data/evaluation/fda_observations.json to that evaluation prefix, then:
+# Submit:
 #   export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
+#   export MODEL_RUN_ID=<RUN_ID of the training job>
+#   export INPUT_PATH=dataset/v2/flash/test.json
 #   export TRAINER_IMAGE=your-registry/litewave-fda-trainer:TAG
 #   envsubst < deploy/k8s/infer-job.yaml | kubectl apply -f -
 #   kubectl logs -f job/fda-infer-${RUN_ID} -n ml-workloads
@@ -39,8 +41,8 @@ spec:
           imagePullPolicy: IfNotPresent
           command: ["python3", "-m", "fda_classifier.infer"]
           args:
-            - --model-dir=/gcs-mount/registry/model-v1
-            - --input=/gcs-mount/evaluation/fda_observations.json
+            - --model-dir=/gcs-mount/registry/${MODEL_RUN_ID}
+            - --input=/gcs-mount/${INPUT_PATH}
             - --output=/gcs-mount/evaluation/predictions-${RUN_ID}.json
             - --batch-size=16
           env:
@@ -79,7 +81,7 @@ spec:
       volumes:
         - name: ml-store
           persistentVolumeClaim:
-            claimName: ml-object-store
+            claimName: ml-object-store-fda-classifier
         - name: hf-cache
           emptyDir: {}
         - name: dshm

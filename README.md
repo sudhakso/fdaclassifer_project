@@ -81,36 +81,99 @@ python3 train.py \
 
 ## Train on GKE
 
-```bash
-docker build -t litewave-fda-trainer:dev .
-docker tag litewave-fda-trainer:dev "$TRAINER_IMAGE" && docker push "$TRAINER_IMAGE"
+Build the image with Cloud Build from a checkout that holds only the code. Do not build from a
+directory that contains a service account key or data files: `gcloud builds submit` uploads the
+whole directory.
 
-export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
-export TRAINER_IMAGE=your-registry/litewave-fda-trainer:TAG
+```bash
+export PROJECT_ID=striped-sight-489713-a0
+export REGION=asia-southeast1
+export TRAINER_IMAGE=${REGION}-docker.pkg.dev/${PROJECT_ID}/gke-finetune/dberta-finetuned:TAG
+gcloud builds submit --tag "$TRAINER_IMAGE" .
+
+export RUN_ID=fda-$(date +%m%d-%H%M)
+export DATASET_PATH=dataset/v2/opus/train.json
 envsubst < deploy/k8s/fine-tune-job.yaml | kubectl apply -f -
-kubectl logs -f "job/fda-train-${RUN_ID}" -n ml-workloads
+kubectl logs -f "job/fda-train-${RUN_ID}" -n ml-workloads -c trainer
 ```
 
-The Job uses the same cluster contract as the Gemma4 trainer: namespace `ml-workloads`, service account `vijeta-finetuning-workload-sa`, L4 node pool, and the `ml-object-store` GCS FUSE volume mounted at `/gcs-mount`. Put the labelled JSON at `dataset/v1/fda_labelled_sample.json` in that bucket. The trainer writes the final model to `registry/model-v1/` on the same mount (`config.json`, weights, tokenizer, `training_summary.json`), not epoch checkpoints.
+The Job uses the same cluster contract as the Gemma4 trainer: namespace `ml-workloads`, service account `vijeta-finetuning-workload-sa`, L4 node pool, and the `fdaclassifier` bucket mounted at `/gcs-mount` through the `ml-object-store-fda-classifier` claim. `DATASET_PATH` is the labelled JSON's path inside that bucket. The trainer writes the final model to `registry/${RUN_ID}/` on the same mount (`config.json`, weights, tokenizer, `training_summary.json`), so each run keeps its own directory.
+
+The GPU pool is Spot, and a node can be shut down in the middle of a run. To make a run resumable, add `--checkpoint-dir=/gcs-mount/checkpoints/${RUN_ID}` to the Job's `args`. The trainer then saves a checkpoint to the bucket after every epoch, and a restarted pod continues from the newest complete one. The directory is removed after a successful export. `backoffLimit` is 20 because every node shutdown counts as a failed pod.
 
 After the object prefix is in place, call the inference service `/reload` endpoint from outside this job. The training container does not send that webhook.
 
+### Training options
+
+The defaults reproduce the original recipe. Add any of these to the Job's `args`:
+
+| Flag | Default | What it does |
+|---|---|---|
+| `--epochs` | 4 | Maximum epochs. |
+| `--eval-data-path` | none | Labelled file to evaluate on each epoch. Without it, 10% of the training rows are held out. |
+| `--selection-metric` | `f1` | Picks the epoch to export: `f1` is severity macro F1, `combined` is its mean with tier and CFR accuracy. |
+| `--early-stopping-patience` | 2 | Epochs without improvement before stopping. |
+| `--warmup-ratio` | 0 | Share of steps spent warming up the learning rate. |
+| `--severity-loss-weight` | 1 | Multiplier on the severity loss. |
+| `--label-smoothing` | 0 | Leave at 0. With the severity class weights it pushes every example toward the rare class. |
+| `--checkpoint-dir` | none | Where epoch checkpoints go, for resume. |
+| `--base-model` | `microsoft/deberta-v3-base` | Any encoder `AutoModel` can load. `answerdotai/ModernBERT-large` has been run. |
+
+The encoder is always loaded as float32. The hub checkpoint for DeBERTa-v3 is stored in float16, current transformers keeps that dtype, and AdamW on float16 weights produces NaN on the first step.
+
 ## Run inference on GKE
 
-Put unlabeled observations at `evaluation/fda_observations.json` in the same bucket. `data/evaluation/fda_observations.json` is a three-observation sample in that shape. The Job reads the trained model from `registry/model-v1/` and writes `evaluation/predictions-${RUN_ID}.json`. Rebuild the trainer image first so it includes the batch scorer. The container entrypoint is still training; this Job overrides it.
+The Job reads a trained model from `registry/${MODEL_RUN_ID}/`, scores the observations in `INPUT_PATH`, and writes `evaluation/predictions-${RUN_ID}.json`. The input has the same shape as the training file, and labels in it are ignored. `data/evaluation/fda_observations.json` is a small sample in that shape. The container entrypoint is still training; this Job overrides it.
 
 ```bash
-export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
-export TRAINER_IMAGE=your-registry/litewave-fda-trainer:TAG
+export RUN_ID=fda-test-$(date +%m%d-%H%M)
+export MODEL_RUN_ID=<RUN_ID of the training job>
+export INPUT_PATH=dataset/v2/opus/test.json
 envsubst < deploy/k8s/infer-job.yaml | kubectl apply -f -
-kubectl logs -f "job/fda-infer-${RUN_ID}" -n ml-workloads
+kubectl logs -f "job/fda-infer-${RUN_ID}" -n ml-workloads -c infer
 ```
 
-One L4 is enough. Scoring is one forward pass per batch of 16, then up to 128 greedy steps for the rationale. A few thousand observations finish in minutes. The 12–24Gi memory limit is enough for DeBERTa-v3-base; the 2Gi shared-memory volume counts against that limit.
+One L4 is enough. Scoring is one forward pass per batch of 16, then up to 128 greedy steps for the rationale. A few thousand observations finish in minutes. The 12 to 24Gi memory limit is enough for DeBERTa-v3-base; the 2Gi shared-memory volume counts against that limit.
+
+## Relabelling and scoring
+
+The first labelled set used free-text tiers and CFR references, which gave 108 tier strings and 397 CFR strings. The current labels follow `labeling/severity_rubric.md`: three severities, twelve risk categories, and a CFR section, for drug GMP (21 CFR 210/211) observations only. In the training file the risk category is stored in `primary_risk_tier`.
+
+The scripts expect two inputs: the annotated inspection export, and the earlier labelled file, which carries the FDA citation attached to each observation.
+
+```bash
+# 1. Fix the set of observations and a train/test split by firm, and write blind batches to label.
+python3 scripts/prepare_relabel_batches.py \
+  --s3-dataset data/fda_483_dataset.json \
+  --pro-labels data/fda_labelled_sample.json \
+  --output-dir data/fda_relabel
+
+# 2. Label each batch in data/fda_relabel/blind/ against the rubric and write
+#    data/fda_relabel/labels/batch_NNN.json with one object per observation:
+#    id, severity, risk_category, cfr_section, rule, borderline, in_scope, reason.
+
+# 3. Write trainer-ready files for a label set.
+python3 scripts/assemble_arm.py \
+  --universe data/fda_relabel/universe.json \
+  --arm opus --relabels-dir data/fda_relabel/labels \
+  --drop-summary --val-ratio 0.1 \
+  --output-dir data/fda_arms/opus_nosummary_val
+
+# 4. After training and inference, score the predictions against every reference.
+python3 scripts/score_predictions.py \
+  --predictions predictions.json \
+  --universe data/fda_relabel/universe.json \
+  --cfr-classes data/fda_arms/opus_nosummary_val/cfr_classes.json \
+  --relabels-dir data/fda_relabel/labels
+```
+
+`scripts/build_reference_sample.py` and `scripts/compare_reference_labels.py` draw a small stratified sample and measure how consistent a labeller is with itself and with the existing labels. Use them before relabelling everything.
+
+Results so far are in `docs/results/2026-10-07-experiments.md`.
 
 ## Vertex AI endpoint
 
-Register the trained export under `gs://fdaclassifier/registry/model-v1/`, create an endpoint in `us-central1`, then deploy onto one T4 with autoscaling 1–2 replicas.
+Register a trained export, for example `gs://fdaclassifier/registry/<RUN_ID>/`, create an endpoint in `us-central1`, then deploy onto one T4 with autoscaling 1 to 2 replicas.
 
 ```bash
 # 1. Upload/Register the model in us-central1
@@ -118,7 +181,7 @@ gcloud ai models upload \
   --region="us-central1" \
   --display-name="deberta-fda-classifier" \
   --container-image-uri="us-docker.pkg.dev/deeplearning-platform-release/gcr.io/huggingface-pytorch-inference-cu121.2-3.transformers.4-48.ubuntu2204.py311" \
-  --artifact-uri="gs://fdaclassifier/registry/model-v1/"
+  --artifact-uri="gs://fdaclassifier/registry/<RUN_ID>/"
 
 # 2. Create the Endpoint in us-central1
 gcloud ai endpoints create \
@@ -142,7 +205,7 @@ The Hugging Face inference image above does **not** load `heads.pt` or the evide
 export PROJECT_ID=striped-sight-489713-a0
 export REGION=asia-southeast1
 export IMAGE_TAG=v1.4
-export MODEL_ARTIFACT_URI=gs://fdaclassifier/registry/model-v1
+export MODEL_ARTIFACT_URI=gs://fdaclassifier/registry/<RUN_ID>
 
 # Build Dockerfile.predictor and push to Artifact Registry, then deploy to Vertex.
 ./deploy/vertex/deploy_predictor.sh

@@ -3,11 +3,12 @@
 # The trainer only uses filesystem paths under the mount.
 #
 # Expected bucket layout (PVC ml-object-store):
-#   gs://bucket/dataset/v1/fda_labelled_sample.json -> /gcs-mount/dataset/v1/fda_labelled_sample.json
-#   gs://bucket/registry/model-v1/                 -> /gcs-mount/registry/model-v1/
+#   gs://bucket/${DATASET_PATH}       -> /gcs-mount/${DATASET_PATH}
+#   gs://bucket/registry/${RUN_ID}/   -> /gcs-mount/registry/${RUN_ID}/  (one directory per run)
 #
 # Submit:
 #   export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
+#   export DATASET_PATH=dataset/v2/flash/train.json
 #   export TRAINER_IMAGE=your-registry/litewave-fda-trainer:TAG
 #   envsubst < deploy/k8s/fine-tune-job.yaml | kubectl apply -f -
 #   kubectl logs -f job/fda-train-${RUN_ID} -n ml-workloads
@@ -20,7 +21,9 @@ metadata:
     app: fda-trainer
     run_id: "${RUN_ID}"
 spec:
-  backoffLimit: 3
+  # The GPU pool is Spot. Each node shutdown counts as a failure, and a run
+  # resumes from its checkpoint, so allow many restarts.
+  backoffLimit: 20
   ttlSecondsAfterFinished: 86400
   template:
     metadata:
@@ -37,8 +40,8 @@ spec:
           image: ${TRAINER_IMAGE}
           imagePullPolicy: IfNotPresent
           args:
-            - --fda-data-path=/gcs-mount/dataset/v1/fda_labelled_sample.json
-            - --output-gcs-uri=/gcs-mount/registry/model-v1/
+            - --fda-data-path=/gcs-mount/${DATASET_PATH}
+            - --output-gcs-uri=/gcs-mount/registry/${RUN_ID}/
             - --base-model=microsoft/deberta-v3-base
             - --epochs=4
             - --batch-size=16

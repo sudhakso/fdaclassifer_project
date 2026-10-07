@@ -34,6 +34,8 @@ class FdaMultiHeadModel(nn.Module):
         self.start_token_id = start_token_id
         self.eos_token_id = eos_token_id
         self.severity_weights: torch.Tensor | None = None
+        self.severity_loss_weight = 1.0
+        self.label_smoothing = 0.0
 
     def forward(
         self,
@@ -55,10 +57,12 @@ class FdaMultiHeadModel(nn.Module):
             weight = None
             if self.severity_weights is not None:
                 weight = self.severity_weights.to(device=severity_logits.device, dtype=severity_logits.dtype)
+            smoothing = self.label_smoothing
             loss = (
-                nn.functional.cross_entropy(severity_logits, severity, weight=weight)
-                + nn.functional.cross_entropy(tier_logits, tier)
-                + nn.functional.cross_entropy(cfr_logits, cfr)
+                self.severity_loss_weight
+                * nn.functional.cross_entropy(severity_logits, severity, weight=weight, label_smoothing=smoothing)
+                + nn.functional.cross_entropy(tier_logits, tier, label_smoothing=smoothing)
+                + nn.functional.cross_entropy(cfr_logits, cfr, label_smoothing=smoothing)
             )
             if evidence_ids is not None and (evidence_ids >= 0).any():
                 loss = loss + self._evidence_loss(hidden, evidence_ids)
