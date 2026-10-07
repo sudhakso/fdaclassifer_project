@@ -1,0 +1,17 @@
+# Cloud Build config for the FDA Vertex predictor image.
+# Used by deploy_predictor.sh via:
+#   gcloud builds submit --config=deploy/vertex/cloudbuild.yaml --substitutions=_IMAGE=...
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --platform=linux/amd64
+      - -f
+      - Dockerfile.predictor
+      - -t
+      - ${_IMAGE}
+      - .
+images:
+  - ${_IMAGE}
+options:
+  logging: CLOUD_LOGGING_ONLY

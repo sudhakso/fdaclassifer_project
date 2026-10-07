@@ -313,3 +313,25 @@ def _citation_text(row: dict) -> str:
         if isinstance(value, str) and value.strip():
             parts.append(value.strip())
     return " — ".join(parts)
+
+
+def instance_to_text(instance: object) -> str:
+    """Turn a Vertex / HTTP predict instance into encoder text.
+
+    Accepts a prebuilt ``text`` string, a plain string, or an observation object
+    with ``full_details`` (and optional establishment type, summary, citation).
+    """
+    if isinstance(instance, str):
+        text = instance.strip()
+        if not text:
+            raise ValueError("instance text is empty")
+        return text
+    if not isinstance(instance, dict):
+        raise ValueError("instance must be a string or an object")
+    prebuilt = instance.get("text")
+    if isinstance(prebuilt, str) and prebuilt.strip():
+        return prebuilt.strip()
+    details = _first(instance, _DETAIL_KEYS)
+    if not details:
+        raise ValueError("instance needs full_details or text")
+    return build_input_text(instance, instance, str(details))

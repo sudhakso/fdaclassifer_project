@@ -108,6 +108,64 @@ kubectl logs -f "job/fda-infer-${RUN_ID}" -n ml-workloads
 
 One L4 is enough. Scoring is one forward pass per batch of 16, then up to 128 greedy steps for the rationale. A few thousand observations finish in minutes. The 12–24Gi memory limit is enough for DeBERTa-v3-base; the 2Gi shared-memory volume counts against that limit.
 
+## Vertex AI endpoint
+
+Register the trained export under `gs://fdaclassifier/registry/model-v1/`, create an endpoint in `us-central1`, then deploy onto one T4 with autoscaling 1–2 replicas.
+
+```bash
+# 1. Upload/Register the model in us-central1
+gcloud ai models upload \
+  --region="us-central1" \
+  --display-name="deberta-fda-classifier" \
+  --container-image-uri="us-docker.pkg.dev/deeplearning-platform-release/gcr.io/huggingface-pytorch-inference-cu121.2-3.transformers.4-48.ubuntu2204.py311" \
+  --artifact-uri="gs://fdaclassifier/registry/model-v1/"
+
+# 2. Create the Endpoint in us-central1
+gcloud ai endpoints create \
+  --region="us-central1" \
+  --display-name="fda-classifier-endpoint"
+
+# 3. Deploy the Model to the Endpoint (replace with the new Model & Endpoint IDs from above)
+gcloud ai endpoints deploy-model <NEW_ENDPOINT_ID> \
+  --region="us-central1" \
+  --model="<NEW_MODEL_ID>" \
+  --display-name="deberta-fda-classifier-deployment" \
+  --machine-type="n1-standard-4" \
+  --accelerator="type=nvidia-tesla-t4,count=1" \
+  --min-replica-count=1 \
+  --max-replica-count=2
+```
+
+The Hugging Face inference image above does **not** load `heads.pt` or the evidence decoder, so predictions collapse. Use the custom predictor container instead. Build and push with Cloud Build the same way as the trainer image:
+
+```bash
+export PROJECT_ID=striped-sight-489713-a0
+export REGION=asia-southeast1
+export IMAGE_TAG=v1.4
+export MODEL_ARTIFACT_URI=gs://fdaclassifier/registry/model-v1
+
+# Build Dockerfile.predictor and push to Artifact Registry, then deploy to Vertex.
+./deploy/vertex/deploy_predictor.sh
+
+# Image-only (no Vertex upload/deploy):
+# SKIP_DEPLOY=1 ./deploy/vertex/deploy_predictor.sh
+```
+
+That produces:
+
+`asia-southeast1-docker.pkg.dev/striped-sight-489713-a0/gke-finetune/dberta-finetuned:v1.4`
+
+Equivalent one-liner for the image push alone:
+
+```bash
+gcloud builds submit \
+  --config=deploy/vertex/cloudbuild.yaml \
+  --substitutions=_IMAGE=${REGION}-docker.pkg.dev/${PROJECT_ID}/gke-finetune/dberta-finetuned:${IMAGE_TAG} \
+  .
+```
+
+Vertex model/endpoint steps in the script use `VERTEX_REGION` (default `us-central1`), separate from the Artifact Registry `REGION`.
+
 ## Scale
 
 DeBERTa-v3-base is about 184M parameters. At batch 16 and sequence length 512 it uses well under an L4's 24 GB, so one GPU is the right size for a corpus up to a few hundred thousand observations (on the order of a few hours for four epochs). Dynamic padding is on, so short observations do not pay for a full 512-token batch.

@@ -1,0 +1,14 @@
+{
+  "instances": [
+    {
+      "establishment_type": "503B Outsourcing Facility",
+      "observation_summary": "The inspection found a missing complaint procedure and sterility failures released without a root cause.",
+      "full_details": "Two sterility failures were closed without identifying a root cause or extending the investigation to distributed lots."
+    },
+    {
+      "establishment_type": "Drug Manufacturer",
+      "observation_summary": "Batch records were incomplete for one compression lot.",
+      "full_details": "One batch production record was missing the second reviewer initials on the compression step."
+    }
+  ]
+}

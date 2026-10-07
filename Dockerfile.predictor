@@ -1,0 +1,42 @@
+# Vertex AI custom prediction container for the FDA 483 classifier.
+# Loads labels.json + heads.pt + the fine-tuned encoder from AIP_STORAGE_URI.
+#
+#   docker build --platform linux/amd64 -f Dockerfile.predictor -t litewave-fda-predictor:dev .
+#   docker tag litewave-fda-predictor:dev $PREDICTOR_IMAGE && docker push $PREDICTOR_IMAGE
+#
+# Local smoke (weights on disk):
+#   docker run --rm -p 8080:8080 -e MODEL_DIR=/model -v $PWD/model-v1:/model \
+#     litewave-fda-predictor:dev
+
+FROM pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    HF_HOME=/tmp/hf \
+    TOKENIZERS_PARALLELISM=false \
+    PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
+    AIP_HTTP_PORT=8080 \
+    AIP_HEALTH_ROUTE=/health \
+    AIP_PREDICT_ROUTE=/predict \
+    MODEL_DIR=/model \
+    LOAD_MODEL_ON_STARTUP=1
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt \
+    && rm /tmp/requirements.txt
+
+COPY fda_classifier ./fda_classifier
+
+RUN mkdir -p /model /tmp/hf /tmp/model
+
+EXPOSE 8080
+
+# One worker: the DeBERTa encoder + evidence decoder stay resident.
+CMD ["python3", "-m", "fda_classifier.serving.app"]
