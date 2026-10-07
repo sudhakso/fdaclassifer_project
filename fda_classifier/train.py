@@ -106,10 +106,22 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--learning-rate", type=float, default=2e-5)
     parser.add_argument("--max-length", type=int, default=512)
     parser.add_argument("--eval-ratio", type=float, default=0.1)
+    parser.add_argument("--eval-data-path", help="Separate labelled file to evaluate on, instead of holding out --eval-ratio")
+    parser.add_argument("--warmup-ratio", type=float, default=0.0)
+    parser.add_argument("--severity-loss-weight", type=float, default=1.0, help="Multiplier on the severity loss relative to the tier and CFR losses")
+    parser.add_argument("--label-smoothing", type=float, default=0.0)
+    parser.add_argument("--early-stopping-patience", type=int, default=2)
+    parser.add_argument(
+        "--selection-metric",
+        default="f1",
+        choices=("f1", "combined"),
+        help="Metric that picks the best epoch: severity macro F1, or the mean of that with tier and CFR accuracy",
+    )
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--max-steps", type=int, default=-1, help="Override epochs for a smoke run")
     parser.add_argument("--min-eval-f1", type=float, default=0.0, help="Fail the job when macro F1 is below this")
     parser.add_argument("--cache-dir", default="/tmp/training_cache")
+    parser.add_argument("--checkpoint-dir", help="Where epoch checkpoints go. A restarted job resumes from the last one found here")
     return parser
 
 
@@ -122,7 +134,7 @@ def main() -> None:
     os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
     local_data_path = os.path.join(cache_dir, "fda_data.json")
-    checkpoint_dir = os.path.join(cache_dir, "checkpoints")
+    checkpoint_dir = args.checkpoint_dir or os.path.join(cache_dir, "checkpoints")
     export_dir = os.path.join(cache_dir, "trained_model")
 
     _stage_input(args.fda_data_path, local_data_path)
@@ -135,8 +147,16 @@ def main() -> None:
     if not examples:
         raise SystemExit("No labeled observations found in the dataset")
 
+    if args.eval_data_path:
+        local_eval_path = os.path.join(cache_dir, "fda_eval_data.json")
+        _stage_input(args.eval_data_path, local_eval_path)
+        with open(local_eval_path, encoding="utf-8") as handle:
+            eval_rows, _ = load_training_examples(json.load(handle))
+        train_rows = examples
+        examples = train_rows + eval_rows
+    else:
+        train_rows, eval_rows = stratified_split(examples, args.eval_ratio, args.seed)
     label_maps = _label_maps(examples)
-    train_rows, eval_rows = stratified_split(examples, args.eval_ratio, args.seed)
     logger.info(
         "Examples=%s train=%s eval=%s severity=%s tiers=%s cfr=%s",
         len(examples),
@@ -148,7 +168,10 @@ def main() -> None:
     )
 
     tokenizer = AutoTokenizer.from_pretrained(args.base_model)
-    encoder = AutoModel.from_pretrained(args.base_model)
+    # The hub checkpoint is stored in float16 and current transformers keeps
+    # that dtype on load. AdamW on float16 weights divides by zero (its epsilon
+    # and the squared gradients underflow), so the weights must be float32.
+    encoder = AutoModel.from_pretrained(args.base_model, torch_dtype=torch.float32)
     model = FdaMultiHeadModel(
         encoder,
         num_severity=len(label_maps["severity"]),
@@ -159,6 +182,8 @@ def main() -> None:
         eos_token_id=tokenizer.sep_token_id,
     )
     model.severity_weights = torch.tensor(class_weights([row["severity"] for row in train_rows]), dtype=torch.float)
+    model.severity_loss_weight = args.severity_loss_weight
+    model.label_smoothing = args.label_smoothing
 
     train_dataset = _encode(tokenizer, train_rows, args.max_length, label_maps)
     # A max-step smoke run can finish before the first epoch eval, which makes
@@ -186,12 +211,13 @@ def main() -> None:
         dataloader_num_workers=2,
         dataloader_pin_memory=torch.cuda.is_available(),
         load_best_model_at_end=eval_dataset is not None,
-        metric_for_best_model="f1" if eval_dataset is not None else None,
+        metric_for_best_model=args.selection_metric if eval_dataset is not None else None,
         greater_is_better=True,
     )
     if args.max_steps > 0:
         training_kwargs["max_steps"] = args.max_steps
     _set_eval_strategy(training_kwargs, "epoch" if eval_dataset is not None else "no")
+    _set_warmup(training_kwargs, args.warmup_ratio)
     training_args = TrainingArguments(**training_kwargs)
 
     trainer_kwargs = dict(
@@ -201,7 +227,7 @@ def main() -> None:
         eval_dataset=eval_dataset,
         data_collator=_FdaCollator(tokenizer),
         compute_metrics=_compute_metrics if eval_dataset is not None else None,
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=2)] if eval_dataset is not None else None,
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=args.early_stopping_patience)] if eval_dataset is not None else None,
     )
     trainer_signature = inspect.signature(Trainer.__init__)
     if "processing_class" in trainer_signature.parameters:
@@ -211,7 +237,12 @@ def main() -> None:
 
     trainer = _FdaTrainer(**trainer_kwargs)
     logger.info("Starting fine-tune of %s", args.base_model)
-    trainer.train()
+    resume = _last_complete_checkpoint(checkpoint_dir)
+    if resume:
+        logger.info("Resuming from %s", resume)
+    trainer.train(resume_from_checkpoint=resume)
+    if not all(torch.isfinite(parameter).all() for parameter in trainer.model.parameters()):
+        raise SystemExit("Training produced non-finite weights; nothing was exported")
 
     metrics = trainer.evaluate() if eval_dataset is not None else {}
     eval_f1 = float(metrics.get("eval_f1", 0.0))
@@ -237,6 +268,8 @@ def main() -> None:
         handle.write("\n")
 
     _publish(export_dir, args.output_gcs_uri)
+    if args.checkpoint_dir:
+        shutil.rmtree(checkpoint_dir, ignore_errors=True)
     logger.info("Fine-tuning job completed")
 
 
@@ -320,12 +353,14 @@ def _compute_metrics(eval_pred) -> dict[str, float]:
     predictions, labels = eval_pred
     severity_pred = predictions[:, 0].tolist()
     severity_gold = labels[:, 0].tolist()
-    return {
+    metrics = {
         "accuracy": accuracy(severity_pred, severity_gold),
         "f1": macro_f1(severity_pred, severity_gold),
         "tier_accuracy": accuracy(predictions[:, 1].tolist(), labels[:, 1].tolist()),
         "cfr_accuracy": accuracy(predictions[:, 2].tolist(), labels[:, 2].tolist()),
     }
+    metrics["combined"] = (metrics["f1"] + metrics["tier_accuracy"] + metrics["cfr_accuracy"]) / 3
+    return metrics
 
 
 def _set_eval_strategy(kwargs: dict, strategy: str) -> None:
@@ -334,6 +369,35 @@ def _set_eval_strategy(kwargs: dict, strategy: str) -> None:
         kwargs["eval_strategy"] = strategy
     else:
         kwargs["evaluation_strategy"] = strategy
+
+
+def _last_complete_checkpoint(checkpoint_dir: str) -> str | None:
+    """Newest checkpoint that finished writing.
+
+    The Trainer writes trainer_state.json last, so a directory without it was cut
+    off mid-save (for example by a node shutdown) and cannot be resumed from.
+    """
+    if not os.path.isdir(checkpoint_dir):
+        return None
+    steps = [
+        int(name.removeprefix("checkpoint-"))
+        for name in os.listdir(checkpoint_dir)
+        if name.startswith("checkpoint-")
+        and name.removeprefix("checkpoint-").isdigit()
+        and os.path.isfile(os.path.join(checkpoint_dir, name, "trainer_state.json"))
+    ]
+    return os.path.join(checkpoint_dir, f"checkpoint-{max(steps)}") if steps else None
+
+
+def _set_warmup(kwargs: dict, ratio: float) -> None:
+    """Newer transformers dropped warmup_ratio and read a fractional warmup_steps as a ratio."""
+    if ratio <= 0:
+        return
+    parameters = inspect.signature(TrainingArguments.__init__).parameters
+    if "warmup_ratio" in parameters:
+        kwargs["warmup_ratio"] = ratio
+    else:
+        kwargs["warmup_steps"] = ratio
 
 
 if __name__ == "__main__":

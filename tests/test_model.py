@@ -49,6 +49,24 @@ class ModelTests(unittest.TestCase):
         self.assertEqual(evidence.shape[0], 1)
         self.assertGreaterEqual(evidence.shape[1], 1)
 
+    def test_severity_weight_and_label_smoothing_change_the_loss(self):
+        torch.manual_seed(0)
+        model = FdaMultiHeadModel(_TinyEncoder(), num_severity=3, num_tiers=4, num_cfr=5, pad_token_id=0, start_token_id=1)
+        batch = dict(
+            input_ids=torch.randint(3, 30, (2, 6)),
+            severity=torch.tensor([0, 2]),
+            tier=torch.tensor([1, 3]),
+            cfr=torch.tensor([4, 0]),
+        )
+        base = model(**batch)["loss"].item()
+        model.severity_loss_weight = 3.0
+        weighted = model(**batch)["loss"].item()
+        model.severity_loss_weight = 1.0
+        model.label_smoothing = 0.1
+        smoothed = model(**batch)["loss"].item()
+        self.assertGreater(weighted, base)
+        self.assertNotAlmostEqual(smoothed, base, places=4)
+
 
 if __name__ == "__main__":
     unittest.main()
