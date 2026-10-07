@@ -79,7 +79,7 @@ spec:
       volumes:
         - name: ml-store
           persistentVolumeClaim:
-            claimName: ml-object-store
+            claimName: ml-object-store-fda-classifier
         - name: hf-cache
           emptyDir: {}
         - name: dshm
