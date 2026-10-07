@@ -5,4 +5,4 @@ __pycache__/
 checkpoints/
 *.safetensors
 data/fda_*
-striped-sight-*.json
+keys/
