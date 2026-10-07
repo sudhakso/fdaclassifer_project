@@ -26,6 +26,8 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt \
     && rm /tmp/requirements.txt
 
 COPY fda_classifier ./fda_classifier
+COPY scripts ./scripts
+COPY labeling ./labeling
 COPY train.py .
 
 RUN mkdir -p /tmp/training_cache

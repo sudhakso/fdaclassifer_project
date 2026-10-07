@@ -1,0 +1,78 @@
+# Relabel drug-GMP observations with labeling/severity_rubric.md.
+# CPU only. The two source files and the outputs live on the GCS FUSE mount.
+#
+# Expected bucket layout:
+#   gs://bucket/${S3_DATASET}     inspection export (flash-lite labels)
+#   gs://bucket/${PRO_LABELS}     Gemini-pro file, fda_labelled_sample.json
+#   gs://bucket/${RELABEL_DIR}/   blind batches, universe.json, labels/
+#   gs://bucket/${OUTPUT_DIR}/    train.json, val.json, test.json
+#
+# Rebuild the trainer image first so it contains scripts/ and labeling/.
+# Create a secret named gemini-api-key with key api-key.
+#
+# Submit:
+#   export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
+#   export TRAINER_IMAGE=asia-southeast1-docker.pkg.dev/<PROJECT>/gke-finetune/dberta-finetuned:TAG
+#   export S3_DATASET=dataset/fda_483_dataset.json
+#   export PRO_LABELS=dataset/fda_labelled_sample.json
+#   export RELABEL_DIR=dataset/v2/relabel
+#   export OUTPUT_DIR=dataset/v2/opus
+#   envsubst < deploy/k8s/relabel-job.yaml | kubectl apply -f -
+#   kubectl logs -f job/fda-relabel-${RUN_ID} -n ml-workloads
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: ml-workloads
+  name: fda-relabel-${RUN_ID}
+  labels:
+    app: fda-relabel
+    run_id: "${RUN_ID}"
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: fda-relabel
+        run_id: "${RUN_ID}"
+      annotations:
+        gke-gcsfuse/volumes: "true"
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: vijeta-finetuning-workload-sa
+      containers:
+        - name: relabel
+          image: ${TRAINER_IMAGE}
+          imagePullPolicy: IfNotPresent
+          command: ["python3", "scripts/run_relabel.py"]
+          args:
+            - --s3-dataset=/gcs-mount/${S3_DATASET}
+            - --pro-labels=/gcs-mount/${PRO_LABELS}
+            - --work-dir=/gcs-mount/${RELABEL_DIR}
+            - --output-dir=/gcs-mount/${OUTPUT_DIR}
+            - --rubric=/app/labeling/severity_rubric.md
+            - --batch-size=20
+          env:
+            - name: RUN_ID
+              value: "${RUN_ID}"
+            - name: PYTHONPATH
+              value: /app/scripts
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gemini-api-key
+                  key: api-key
+          resources:
+            requests:
+              cpu: "1"
+              memory: 4Gi
+            limits:
+              cpu: "2"
+              memory: 8Gi
+          volumeMounts:
+            - name: ml-store
+              mountPath: /gcs-mount
+      volumes:
+        - name: ml-store
+          persistentVolumeClaim:
+            claimName: ml-object-store-fda-classifier

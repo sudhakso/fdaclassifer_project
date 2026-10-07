@@ -169,6 +169,21 @@ python3 scripts/score_predictions.py \
 
 `scripts/build_reference_sample.py` and `scripts/compare_reference_labels.py` draw a small stratified sample and measure how consistent a labeller is with itself and with the existing labels. Use them before relabelling everything.
 
+The same steps run as a CPU Job. It reads the two source files from the bucket, writes blind batches and rubric labels under `dataset/v2/relabel/`, then writes `train.json`, `val.json`, and `test.json` under `dataset/v2/opus/`. Finished batches are skipped on restart. Rebuild the trainer image first so it includes `scripts/` and `labeling/`, and create a secret `gemini-api-key` with key `api-key`.
+
+```bash
+export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
+export TRAINER_IMAGE=asia-southeast1-docker.pkg.dev/<PROJECT>/gke-finetune/dberta-finetuned:TAG
+export S3_DATASET=dataset/fda_483_dataset.json
+export PRO_LABELS=dataset/fda_labelled_sample.json
+export RELABEL_DIR=dataset/v2/relabel
+export OUTPUT_DIR=dataset/v2/opus
+envsubst < deploy/k8s/relabel-job.yaml | kubectl apply -f -
+kubectl logs -f "job/fda-relabel-${RUN_ID}  " -n ml-workloads
+```
+
+This Job does not request a GPU. A few thousand observations is a few hundred Gemini calls and finishes in hours, not GPU-hours.
+
 Results so far are in `docs/results/2026-10-07-experiments.md`.
 
 ## Vertex AI endpoint
