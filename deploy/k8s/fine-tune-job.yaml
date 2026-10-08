@@ -5,6 +5,7 @@
 # Expected bucket layout (PVC ml-object-store):
 #   gs://bucket/${DATASET_PATH}       -> /gcs-mount/${DATASET_PATH}
 #   gs://bucket/registry/${RUN_ID}/   -> /gcs-mount/registry/${RUN_ID}/  (one directory per run)
+#   gs://bucket/runs/${RUN_ID}/manifest.json   shared with the relabel Job
 #
 # Submit:
 #   export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
@@ -43,9 +44,15 @@ spec:
             - --fda-data-path=/gcs-mount/${DATASET_PATH}
             - --output-gcs-uri=/gcs-mount/registry/${RUN_ID}/
             - --base-model=microsoft/deberta-v3-base
-            - --epochs=4
+            - --epochs=8
             - --batch-size=16
             - --learning-rate=2e-5
+            - --eval-data-path=/gcs-mount/${EVAL_PATH}
+            - --warmup-ratio=0.06
+            - --selection-metric=combined
+            - --early-stopping-patience=2
+            - --checkpoint-dir=/gcs-mount/checkpoints/${RUN_ID}
+            - --manifest=/gcs-mount/runs/${RUN_ID}/manifest.json
           env:
             - name: RUN_ID
               value: "${RUN_ID}"

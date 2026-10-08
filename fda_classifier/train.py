@@ -9,6 +9,7 @@ import logging
 import os
 import shutil
 from collections import Counter
+from datetime import datetime, timezone
 
 import torch
 from torch.utils.data import Dataset
@@ -29,6 +30,7 @@ from fda_classifier.data import (
     stratified_split,
 )
 from fda_classifier.gcs import download_blob, upload_directory
+from fda_classifier.manifest import update_manifest
 from fda_classifier.metrics import accuracy, macro_f1
 from fda_classifier.model import FdaMultiHeadModel
 
@@ -122,12 +124,28 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--min-eval-f1", type=float, default=0.0, help="Fail the job when macro F1 is below this")
     parser.add_argument("--cache-dir", default="/tmp/training_cache")
     parser.add_argument("--checkpoint-dir", help="Where epoch checkpoints go. A restarted job resumes from the last one found here")
+    parser.add_argument("--manifest", help="Run manifest updated in place. Relabel writes the source paths into the same file")
     return parser
 
 
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     args = build_parser().parse_args()
+    if args.manifest:
+        update_manifest(args.manifest, {
+            "run_id": os.environ.get("RUN_ID"),
+            "train_data": args.fda_data_path,
+            "eval_data": args.eval_data_path,
+            "base_model": args.base_model,
+            "registry": args.output_gcs_uri,
+            "checkpoint_dir": args.checkpoint_dir,
+            "epochs": args.epochs,
+            "batch_size": args.batch_size,
+            "learning_rate": args.learning_rate,
+            "selection_metric": args.selection_metric,
+            "train_status": "running",
+            "train_started_at": datetime.now(timezone.utc).isoformat(),
+        })
     cache_dir = args.cache_dir
     os.makedirs(cache_dir, exist_ok=True)
     os.environ.setdefault("HF_HOME", os.path.join(cache_dir, "hf"))
@@ -268,6 +286,14 @@ def main() -> None:
         handle.write("\n")
 
     _publish(export_dir, args.output_gcs_uri)
+    if args.manifest:
+        update_manifest(args.manifest, {
+            "train_examples": len(train_rows),
+            "eval_examples": len(eval_rows),
+            "train_metrics": metrics,
+            "train_status": "complete",
+            "train_finished_at": datetime.now(timezone.utc).isoformat(),
+        })
     if args.checkpoint_dir:
         shutil.rmtree(checkpoint_dir, ignore_errors=True)
     logger.info("Fine-tuning job completed")

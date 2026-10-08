@@ -171,6 +171,8 @@ python3 scripts/score_predictions.py \
 
 The same steps run as a CPU Job. It reads the two source files from the bucket, writes blind batches and rubric labels under `dataset/v2/relabel/`, then writes `train.json`, `val.json`, and `test.json` under `dataset/v2/opus/`. Finished batches are skipped on restart. Rebuild the trainer image first so it includes `scripts/` and `labeling/`, and create a secret `gemini-api-key` with key `api-key`.
 
+The relabel Job and the train Job both update `gs://fdaclassifier/runs/${RUN_ID}/manifest.json`. Relabel records the source files and the trainer JSON paths. Training adds the registry path and the eval metrics. Each job only replaces its own fields, so the file still holds both stages when training finishes. The image must include this manifest writer. The running trainer tag does not.
+
 ```bash
 export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
 export TRAINER_IMAGE=asia-southeast1-docker.pkg.dev/<PROJECT>/gke-finetune/dberta-finetuned:TAG
