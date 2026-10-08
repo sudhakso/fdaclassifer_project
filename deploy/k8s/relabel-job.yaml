@@ -6,6 +6,7 @@
 #   gs://bucket/${PRO_LABELS}     Gemini-pro file, fda_labelled_sample.json
 #   gs://bucket/${RELABEL_DIR}/   blind batches, universe.json, labels/
 #   gs://bucket/${OUTPUT_DIR}/    train.json, val.json, test.json
+#   gs://bucket/runs/${RUN_ID}/manifest.json   this Job and the train Job both update it
 #
 # Rebuild the trainer image first so it contains scripts/ and labeling/.
 # Create a secret named gemini-api-key with key api-key.
@@ -52,6 +53,7 @@ spec:
             - --output-dir=/gcs-mount/${OUTPUT_DIR}
             - --rubric=/app/labeling/severity_rubric.md
             - --batch-size=20
+            - --manifest=/gcs-mount/runs/${RUN_ID}/manifest.json
           env:
             - name: RUN_ID
               value: "${RUN_ID}"
