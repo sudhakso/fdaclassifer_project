@@ -67,7 +67,7 @@ class Predictor:
             len(self.labels["cfr_reference"]),
         )
 
-    def predict_instances(self, instances: list[Any], parameters: dict | None = None) -> list[dict[str, str]]:
+    def predict_instances(self, instances: list[Any], parameters: dict | None = None) -> list[dict]:
         if not self.ready:
             raise RuntimeError("model is not loaded")
         texts = [instance_to_text(instance) for instance in instances]
