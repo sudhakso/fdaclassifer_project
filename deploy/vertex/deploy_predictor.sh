@@ -57,7 +57,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"
 
 # Print one TSV row per deployed model:
-# endpoint_resource, endpoint_display, deployed_model_id, display_name, model_resource, deployed_at
+# endpoint_resource, endpoint_display, deployed_model_id, display_name, model_resource, deployed_at, artifact_uri
 list_deployed_rows() {
   gcloud ai endpoints list \
     --project="${PROJECT_ID}" \
@@ -66,6 +66,7 @@ list_deployed_rows() {
   | python3 -c '
 import json, subprocess, sys
 endpoints = json.load(sys.stdin)
+artifacts = {}
 for endpoint in endpoints:
     described = subprocess.check_output([
         "gcloud", "ai", "endpoints", "describe", endpoint["name"],
@@ -79,13 +80,22 @@ for endpoint in endpoints:
         if created.endswith("Z"):
             created = created[:-1]
         created = created.replace("T", " ")[:16]
+        model = deployed.get("model") or ""
+        if model not in artifacts:
+            artifacts[model] = subprocess.check_output([
+                "gcloud", "ai", "models", "describe", model,
+                "--project", "'"${PROJECT_ID}"'",
+                "--region", "'"${VERTEX_REGION}"'",
+                "--format", "value(artifactUri)",
+            ], text=True).strip()
         print("\t".join([
             endpoint["name"],
             endpoint.get("displayName") or "",
             str(deployed.get("id") or ""),
             deployed.get("displayName") or "",
-            deployed.get("model") or "",
+            model,
             created,
+            artifacts[model],
         ]))
 '
 }
@@ -98,10 +108,11 @@ print_deployed_table() {
     return 1
   fi
   printf '%-4s %-18s %-28s %-22s %s\n' "#" "DEPLOYED" "ENDPOINT" "DEPLOYED MODEL" "MODEL"
-  while IFS=$'\t' read -r endpoint_resource endpoint_display deployed_id display_name model_resource deployed_at; do
+  while IFS=$'\t' read -r endpoint_resource endpoint_display deployed_id display_name model_resource deployed_at artifact_uri; do
     index=$((index + 1))
     printf '%-4s %-18s %-28s %-22s %s\n' "${index}" "${deployed_at}" "${endpoint_display}" "${display_name}" "${model_resource}"
     printf '     endpoint=%s deployed_model_id=%s\n' "${endpoint_resource}" "${deployed_id}"
+    printf '     artifact=%s\n' "${artifact_uri}"
   done <<< "${rows}"
 }
 
@@ -120,7 +131,7 @@ undeploy_chosen() {
     return 1
   fi
   index=0
-  while IFS=$'\t' read -r endpoint_resource _endpoint_display deployed_id _display_name model_resource _deployed_at; do
+  while IFS=$'\t' read -r endpoint_resource _endpoint_display deployed_id _display_name model_resource _deployed_at _artifact_uri; do
     index=$((index + 1))
     if [[ "${index}" == "${chosen}" ]]; then
       break
@@ -131,7 +142,7 @@ undeploy_chosen() {
     echo "No row ${chosen}."
     return 1
   fi
-  while IFS=$'\t' read -r row_endpoint _row_display row_deployed _row_name _row_model _row_deployed_at; do
+  while IFS=$'\t' read -r row_endpoint _row_display row_deployed _row_name _row_model _row_deployed_at _row_artifact; do
     if [[ "${row_endpoint}" == "${endpoint_resource}" ]]; then
       same_endpoint+=("${row_deployed}")
     fi
