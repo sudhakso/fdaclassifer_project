@@ -4,13 +4,14 @@ Reads the inspection export and the Gemini-pro labelled file from the mount,
 writes blind batches plus labels under the work directory, then writes
 train.json, val.json, and test.json for the opus arm.
 
---provider anthropic labels with Claude through the Message Batches API and
-needs ANTHROPIC_API_KEY. --provider gemini needs GEMINI_API_KEY.
+--provider anthropic labels with labeling/opus_labeler.py and needs
+ANTHROPIC_API_KEY. --provider gemini needs GEMINI_API_KEY.
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -18,11 +19,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+for folder in (ROOT, ROOT / "labeling"):
+    if str(folder) not in sys.path:
+        sys.path.insert(0, str(folder))
 
 from fda_classifier.manifest import update_manifest
-from label_with_rubric import label_batches, label_batches_anthropic
+from label_with_rubric import label_batches
+from opus_labeler import label_observations
 
 SCRIPTS = Path(__file__).resolve().parent
 DEFAULT_MODELS = {"anthropic": "claude-opus-5-5", "gemini": "gemini-3.1-pro-preview"}
@@ -43,7 +46,7 @@ def main() -> None:
     parser.add_argument("--rubric", type=Path, default=Path("/app/labeling/severity_rubric.md"))
     parser.add_argument("--provider", choices=sorted(DEFAULT_MODELS), default="gemini")
     parser.add_argument("--model", help="Defaults to claude-opus-5-5 for anthropic and gemini-3.1-pro-preview for gemini")
-    parser.add_argument("--reuse-labels", type=Path, help="Labels directory of an earlier release. Anthropic only: its labels are kept when the model and rubric match")
+    parser.add_argument("--label-store", type=Path, help="Anthropic only: labels file kept across releases, so only new observations are sent. Defaults to opus_labels.json in the work directory")
     parser.add_argument("--test-ratio", type=float, default=0.15)
     parser.add_argument("--batch-size", type=int, default=20)
     parser.add_argument("--val-ratio", type=float, default=0.1)
@@ -74,15 +77,10 @@ def main() -> None:
         "--batch-size", str(args.batch_size),
     ])
     if args.provider == "anthropic":
-        labelled = label_batches_anthropic(
-            args.work_dir / "blind",
-            args.work_dir / "labels",
-            args.rubric,
-            args.model,
-            reuse_dir=args.reuse_labels,
-            rows_per_request=args.batch_size,
-        )
-        print(f"labelled {labelled} new observations")
+        blind = [row for path in sorted((args.work_dir / "blind").glob("batch_*.json")) for row in json.loads(path.read_text(encoding="utf-8"))]
+        store = args.label_store or args.work_dir / "opus_labels.json"
+        labels = label_observations(blind, store, args.rubric, args.model, rows_per_request=args.batch_size)
+        (args.work_dir / "labels" / "batch_all.json").write_text(json.dumps(labels, ensure_ascii=False) + "\n", encoding="utf-8")
     else:
         labelled = label_batches(
             args.work_dir / "blind",
