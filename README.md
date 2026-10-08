@@ -169,7 +169,13 @@ python3 scripts/score_predictions.py \
 
 `scripts/build_reference_sample.py` and `scripts/compare_reference_labels.py` draw a small stratified sample and measure how consistent a labeller is with itself and with the existing labels. Use them before relabelling everything.
 
-The same steps run as a CPU Job. It reads the two source files from the bucket, writes blind batches and rubric labels under `dataset/v2/relabel/`, then writes `train.json`, `val.json`, and `test.json` under `dataset/v2/opus/`. Finished batches are skipped on restart. Rebuild the trainer image first so it includes `scripts/` and `labeling/`, and create a secret `gemini-api-key` with key `api-key`.
+The same steps run as a CPU Job. It reads the two source files from the bucket, writes blind batches and rubric labels under `dataset/v2/relabel/`, then writes `train.json`, `val.json`, and `test.json` under `dataset/v2/opus/`. Rebuild the trainer image first so it includes `scripts/` and `labeling/`.
+
+The Job labels with Claude Opus 5.5 through the Anthropic Message Batches API (`--provider=anthropic`). Create a secret `anthropic-api-key` with key `api-key`. To label with Gemini, change the Job to `--provider=gemini` and create `gemini-api-key` the same way.
+
+- **Only new observations are sent.** Each labels folder has a `label_set.json` recording the model and a hash of the rubric. Point `REUSE_LABELS_DIR` at the previous release's labels folder and every observation already labelled there with the same model and rubric keeps its label. A changed rubric or model reuses nothing, so everything is relabelled.
+- **Restarts are safe.** The batch id is saved in `label_set.json`, so a restarted Job waits on the same batch. Requests that fail or return invalid labels are sent again, and the Job fails if any observation is still unlabelled after three rounds.
+- **The split does not move.** Firms listed in `labeling/firm_split.json` keep the train or test split used for the 2026-10-07 results. A firm not listed there is placed by a hash of its id, as are validation firms, so adding observations never moves an existing firm. Train rows whose narrative also appears in test are left out.
 
 The relabel Job and the train Job both update `gs://fdaclassifier/runs/${RUN_ID}/manifest.json`. Relabel records the source files and the trainer JSON paths. Training adds the registry path and the eval metrics. Each job only replaces its own fields, so the file still holds both stages when training finishes. The image must include this manifest writer. The running trainer tag does not.
 
@@ -180,11 +186,12 @@ export S3_DATASET=dataset/fda_483_dataset.json
 export PRO_LABELS=dataset/fda_labelled_sample.json
 export RELABEL_DIR=dataset/v2/relabel
 export OUTPUT_DIR=dataset/v2/opus
+export REUSE_LABELS_DIR=dataset/v1/relabel/labels   # previous release, or leave empty for a full relabel
 envsubst < deploy/k8s/relabel-job.yaml | kubectl apply -f -
 kubectl logs -f "job/fda-relabel-${RUN_ID}  " -n ml-workloads
 ```
 
-This Job does not request a GPU. A few thousand observations is a few hundred Gemini calls and finishes in hours, not GPU-hours.
+This Job does not request a GPU. A batch usually finishes within an hour and can take up to 24.
 
 Results so far are in `docs/results/2026-10-07-experiments.md`.
 

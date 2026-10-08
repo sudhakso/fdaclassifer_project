@@ -1,7 +1,9 @@
 """Write trainer-ready files for one label set (an experiment arm).
 
 Every arm uses the same universe, the same firm-level split, and the same input
-text. Only the three classification labels differ:
+text. Train rows whose narrative also appears word for word in test are left
+out, and validation firms are chosen by a hash of the firm id, so neither moves
+when observations are added. Only the three classification labels differ:
 
   flash  the flash-lite labels from the S3 dataset
   opus   the relabelled set (rows marked out of scope or not yet labelled are dropped)
@@ -16,10 +18,11 @@ from __future__ import annotations
 
 import argparse
 import json
-import random
 import re
 from collections import Counter
 from pathlib import Path
+
+from prepare_relabel_batches import firm_fraction
 
 _SECTION = re.compile(r"\d{2,4}\.\d+")
 RATIONALE_PLACEHOLDER = "not used"
@@ -95,7 +98,6 @@ def main() -> None:
         help="In train and val, use the attached FDA citation's CFR section in place of the arm's label when the citation match score is at least this",
     )
     parser.add_argument("--topics-from", type=Path, help="S3 dataset whose per-observation topic categories are appended to the input text")
-    parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
 
     universe = json.loads(args.universe.read_text(encoding="utf-8"))
@@ -108,7 +110,8 @@ def main() -> None:
             for record in source["records"]
             for observation in record.get("observations") or []
         }
-    train_rows = [row for row in universe if row["split"] == "train"]
+    test_text = {row["full_details"] for row in universe if row["split"] == "test"}
+    train_rows = [row for row in universe if row["split"] == "train" and row["full_details"] not in test_text]
     labels = {row["id"]: label for row in train_rows if (label := arm_labels(row, args.arm, relabels)) is not None}
     kept = [row for row in train_rows if row["id"] in labels]
     if args.fda_cfr_min_score is not None:
@@ -125,11 +128,8 @@ def main() -> None:
         kept = [row for row in kept if not relabels[row["id"]].get("borderline")]
     val_rows: list[dict] = []
     if args.val_ratio > 0:
-        firms = sorted({row["firm"] for row in kept})
-        random.Random(args.seed).shuffle(firms)
-        val_firms = set(firms[: round(len(firms) * args.val_ratio)])
-        val_rows = [row for row in kept if row["firm"] in val_firms]
-        kept = [row for row in kept if row["firm"] not in val_firms]
+        val_rows = [row for row in kept if firm_fraction(row["firm"], "val") < args.val_ratio]
+        kept = [row for row in kept if firm_fraction(row["firm"], "val") >= args.val_ratio]
     labels_train = {row["id"]: labels[row["id"]] for row in kept}
     counts = Counter(label["cfr_section"] for label in labels_train.values())
     cfr_classes = {name for name, count in counts.items() if name and count >= args.min_cfr_count}
@@ -143,6 +143,7 @@ def main() -> None:
     (args.output_dir / "cfr_classes.json").write_text(json.dumps(sorted(cfr_classes)) + "\n", encoding="utf-8")
 
     print(f"arm={args.arm} train rows={len(kept)} val rows={len(val_rows)} (dropped {len(train_rows) - len(kept) - len(val_rows)}) test rows={len(test_rows)}")
+    print("train rows left out because the same narrative is in test:", sum(row["split"] == "train" and row["full_details"] in test_text for row in universe))
     print("train severity:", dict(Counter(label["severity"] for label in labels_train.values())))
     print("categories:", len({label["risk_category"] for label in labels_train.values()}), "| cfr classes:", len(cfr_classes) + 1,
           f"| train rows folded into other: {sum(label['cfr_section'] not in cfr_classes for label in labels_train.values())}")

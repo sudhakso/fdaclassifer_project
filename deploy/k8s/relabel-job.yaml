@@ -9,7 +9,13 @@
 #   gs://bucket/runs/${RUN_ID}/manifest.json   this Job and the train Job both update it
 #
 # Rebuild the trainer image first so it contains scripts/ and labeling/.
-# Create a secret named gemini-api-key with key api-key.
+# Labels with Claude Opus through the Message Batches API. Create a secret
+# named anthropic-api-key with key api-key. For Gemini, change --provider to
+# gemini and create gemini-api-key the same way.
+#
+# REUSE_LABELS_DIR is the labels folder of the previous release. Observations
+# already labelled there with the same model and rubric are not sent again.
+# Leave it empty for a full relabel.
 #
 # Submit:
 #   export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
@@ -18,6 +24,7 @@
 #   export PRO_LABELS=dataset/fda_labelled_sample.json
 #   export RELABEL_DIR=dataset/v2/relabel
 #   export OUTPUT_DIR=dataset/v2/opus
+#   export REUSE_LABELS_DIR=dataset/v1/relabel/labels
 #   envsubst < deploy/k8s/relabel-job.yaml | kubectl apply -f -
 #   kubectl logs -f job/fda-relabel-${RUN_ID} -n ml-workloads
 apiVersion: batch/v1
@@ -53,17 +60,26 @@ spec:
             - --output-dir=/gcs-mount/${OUTPUT_DIR}
             - --rubric=/app/labeling/severity_rubric.md
             - --batch-size=20
+            - --provider=anthropic
+            - --reuse-labels=/gcs-mount/${REUSE_LABELS_DIR}
             - --manifest=/gcs-mount/runs/${RUN_ID}/manifest.json
           env:
             - name: RUN_ID
               value: "${RUN_ID}"
             - name: PYTHONPATH
               value: /app/scripts
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: anthropic-api-key
+                  key: api-key
+                  optional: true
             - name: GEMINI_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: gemini-api-key
                   key: api-key
+                  optional: true
           resources:
             requests:
               cpu: "1"
