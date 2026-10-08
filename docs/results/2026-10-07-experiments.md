@@ -23,15 +23,6 @@ section. Scope is drug GMP (21 CFR 210/211) only. Each run changes one thing fro
 | **D** | Bigger model | Same as B3, but the encoder is ModernBERT-large (about twice the size) instead of DeBERTa-v3-base. | To see if model size is what limits the score. ModernBERT-large is also the encoder Laya is built on, but this run is not Laya. |
 | **E** | Extra input | Same as B3, but the model also reads the topics the UI already has for each observation (for example "lack of sop practice"). | Tejas's suggestion: use the existing categories. |
 
-Runs that were started or planned but have no result:
-
-| Run | What it was | What happened |
-|---|---|---|
-| A-nosummary | A without the inspection summary in the input | Killed by a GPU shutdown just before finishing. Its first three epochs matched A within noise, so the summary makes no real difference. Not rerun. |
-| B2 | B3's recipe plus label smoothing | Stopped. Label smoothing clashed with the class weights and wrecked severity (it fell to 52%). B3 is B2 without it. |
-| A2 | The longer recipe on flash-lite labels | Never run. Lower priority once B showed the labels matter most. |
-| C | B using only rows the labeller was sure about | Never run. Judged too early to be worth a run. |
-
 ## Test-set scores
 
 1,662 observations from firms held out of training, the same for every run. The first three rows
