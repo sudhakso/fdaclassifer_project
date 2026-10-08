@@ -51,7 +51,7 @@ def load_model(model_dir: str | Path, device: torch.device | None = None) -> tup
     return model, tokenizer, labels
 
 
-def predict(text: str, model_dir: str | Path, max_length: int = 512) -> dict[str, str]:
+def predict(text: str, model_dir: str | Path, max_length: int = 512) -> dict:
     model, tokenizer, labels = load_model(model_dir)
     return predict_batch([text], model, tokenizer, labels, max_length=max_length, batch_size=1)[0]
 
@@ -63,13 +63,19 @@ def predict_batch(
     labels: dict,
     max_length: int = 512,
     batch_size: int = 16,
-) -> list[dict[str, str]]:
-    """Score texts in batches. The evidence decoder runs on the same batch."""
+) -> list[dict]:
+    """Score texts in batches. The evidence decoder runs on the same batch.
+
+    Each label comes with its softmax probability as ``<label>_confidence``, and
+    severity also with the probability of every class. These are raw model
+    probabilities: severity is trained with class weights, so they are not
+    calibrated frequencies.
+    """
     if batch_size < 1:
         raise ValueError("batch_size must be at least 1")
     device = next(model.parameters()).device
     max_evidence = int(labels.get("max_evidence_tokens", 128))
-    predictions: list[dict[str, str]] = []
+    predictions: list[dict] = []
     for start in range(0, len(texts), batch_size):
         chunk = texts[start:start + batch_size]
         encoded = tokenizer(
@@ -87,15 +93,21 @@ def predict_batch(
                 encoded["attention_mask"],
                 max_length=max_evidence,
             )
-        severity = outputs["severity_logits"].argmax(dim=-1).tolist()
-        tiers = outputs["tier_logits"].argmax(dim=-1).tolist()
-        cfrs = outputs["cfr_logits"].argmax(dim=-1).tolist()
+        severity_probs = outputs["severity_logits"].float().softmax(dim=-1)
+        tier_confidence, tiers = (values.tolist() for values in outputs["tier_logits"].float().softmax(dim=-1).max(dim=-1))
+        cfr_confidence, cfrs = (values.tolist() for values in outputs["cfr_logits"].float().softmax(dim=-1).max(dim=-1))
+        severity = severity_probs.argmax(dim=-1).tolist()
+        severity_probs = severity_probs.tolist()
         for index in range(len(chunk)):
             predictions.append({
                 "severity": labels["severity"][severity[index]],
                 "primary_risk_tier": labels["primary_risk_tier"][tiers[index]],
                 "cfr_reference": labels["cfr_reference"][cfrs[index]],
                 "fmea_rationale": tokenizer.decode(evidence_ids[index], skip_special_tokens=True).strip(),
+                "severity_confidence": round(severity_probs[index][severity[index]], 6),
+                "primary_risk_tier_confidence": round(tier_confidence[index], 6),
+                "cfr_reference_confidence": round(cfr_confidence[index], 6),
+                "severity_probabilities": {name: round(value, 6) for name, value in zip(labels["severity"], severity_probs[index])},
             })
         logger.info("Scored %s/%s observations", min(start + batch_size, len(texts)), len(texts))
     return predictions
