@@ -39,6 +39,8 @@ Training reads the labelled file, one inspection per record and one or more obse
 
 `severity` must be Minor, Major, or Critical. A row also needs `primary_risk_tier`, `cfr_reference`, and `fmea_rationale`. The citation object is optional and is appended to the input text when present. Inference returns the three labels and `fmea_rationale` as the reason.
 
+Each label also comes with a confidence between 0 and 1 (`severity_confidence`, `primary_risk_tier_confidence`, `cfr_reference_confidence`), and severity with the probability of each class (`severity_probabilities`). Training fits one number per label on the held-out rows, saved as `temperatures` in `labels.json`, so that confidence matches how often the model is right on held-out FDA 483 text. It changes no label. A model saved without `temperatures` returns raw probabilities, which run high. Confidence has not been checked on text other than FDA 483 observations.
+
 ## Labeling
 
 `data/sample_fda_483_observations.json` is a three-row fixture. The labeling set is built from the original FDA export. Observations without `full_details` are dropped. Citation-only rows are not imported.

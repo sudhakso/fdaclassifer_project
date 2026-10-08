@@ -12,6 +12,7 @@ from collections import Counter
 from datetime import datetime, timezone
 
 import torch
+import torch.nn.functional as F
 from torch.utils.data import Dataset
 from transformers import (
     AutoModel,
@@ -266,6 +267,7 @@ def main() -> None:
     eval_f1 = float(metrics.get("eval_f1", 0.0))
     if eval_dataset is not None and eval_f1 < args.min_eval_f1:
         raise SystemExit(f"eval macro F1 {eval_f1:.4f} is below --min-eval-f1 {args.min_eval_f1}")
+    temperatures = _temperatures(trainer, eval_dataset) if eval_dataset is not None else None
 
     if os.path.exists(export_dir):
         shutil.rmtree(export_dir)
@@ -273,13 +275,14 @@ def main() -> None:
     trained = trainer.model
     trained.encoder.save_pretrained(export_dir)
     tokenizer.save_pretrained(export_dir)
-    _save_heads(export_dir, trained, label_maps, tokenizer)
+    _save_heads(export_dir, trained, label_maps, tokenizer, temperatures)
     summary = {
         "base_model": args.base_model,
         "labels": label_maps,
         "train_examples": len(train_rows),
         "eval_examples": len(eval_rows),
         "metrics": metrics,
+        "temperatures": temperatures,
     }
     with open(os.path.join(export_dir, "training_summary.json"), "w", encoding="utf-8") as handle:
         json.dump(summary, handle, indent=2)
@@ -355,8 +358,39 @@ def _encode(tokenizer, rows: list[dict[str, str]], max_length: int, label_maps: 
     return _EncodedObservations(encodings, severity_ids, tier_ids, cfr_ids, evidence)
 
 
-def _save_heads(export_dir: str, model: FdaMultiHeadModel, label_maps: dict[str, list[str]], tokenizer) -> None:
+def _temperatures(trainer: Trainer, dataset: Dataset) -> dict[str, float]:
+    """Per-label temperature that brings confidence in line with accuracy on the held-out rows.
+
+    Inference divides each label's logits by its temperature, which changes no label.
+    """
+    heads = (("severity", "severity_logits", "severity"), ("primary_risk_tier", "tier_logits", "tier"), ("cfr_reference", "cfr_logits", "cfr"))
+    model = trainer.model.eval()
+    logits = {name: [] for name, _, _ in heads}
+    targets = {name: [] for name, _, _ in heads}
+    for batch in trainer.get_eval_dataloader(dataset):
+        batch = trainer._prepare_inputs(batch)
+        with torch.no_grad():
+            outputs = model(**batch)
+        for name, logits_key, target_key in heads:
+            logits[name].append(outputs[logits_key].float().cpu())
+            targets[name].append(batch[target_key].cpu())
+    grid = [step / 20 for step in range(10, 101)]
+    return {
+        name: min(grid, key=lambda value: F.cross_entropy(torch.cat(logits[name]) / value, torch.cat(targets[name])).item())
+        for name in logits
+    }
+
+
+def _save_heads(
+    export_dir: str,
+    model: FdaMultiHeadModel,
+    label_maps: dict[str, list[str]],
+    tokenizer,
+    temperatures: dict[str, float] | None = None,
+) -> None:
     maps = {**label_maps, "max_evidence_tokens": MAX_EVIDENCE_TOKENS}
+    if temperatures is not None:
+        maps["temperatures"] = temperatures
     with open(os.path.join(export_dir, "labels.json"), "w", encoding="utf-8") as handle:
         json.dump(maps, handle, indent=2)
         handle.write("\n")

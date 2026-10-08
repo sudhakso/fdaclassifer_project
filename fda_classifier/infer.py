@@ -67,14 +67,15 @@ def predict_batch(
     """Score texts in batches. The evidence decoder runs on the same batch.
 
     Each label comes with its softmax probability as ``<label>_confidence``, and
-    severity also with the probability of every class. These are raw model
-    probabilities: severity is trained with class weights, so they are not
-    calibrated frequencies.
+    severity also with the probability of every class. Logits are divided by
+    the ``temperatures`` saved with the model, so confidence tracks accuracy on
+    held-out FDA 483 text. Models saved without them return raw probabilities.
     """
     if batch_size < 1:
         raise ValueError("batch_size must be at least 1")
     device = next(model.parameters()).device
     max_evidence = int(labels.get("max_evidence_tokens", 128))
+    temperatures = labels.get("temperatures", {})
     predictions: list[dict] = []
     for start in range(0, len(texts), batch_size):
         chunk = texts[start:start + batch_size]
@@ -93,9 +94,11 @@ def predict_batch(
                 encoded["attention_mask"],
                 max_length=max_evidence,
             )
-        severity_probs = outputs["severity_logits"].float().softmax(dim=-1)
-        tier_confidence, tiers = (values.tolist() for values in outputs["tier_logits"].float().softmax(dim=-1).max(dim=-1))
-        cfr_confidence, cfrs = (values.tolist() for values in outputs["cfr_logits"].float().softmax(dim=-1).max(dim=-1))
+        severity_probs = (outputs["severity_logits"].float() / temperatures.get("severity", 1.0)).softmax(dim=-1)
+        tier_probs = (outputs["tier_logits"].float() / temperatures.get("primary_risk_tier", 1.0)).softmax(dim=-1)
+        cfr_probs = (outputs["cfr_logits"].float() / temperatures.get("cfr_reference", 1.0)).softmax(dim=-1)
+        tier_confidence, tiers = (values.tolist() for values in tier_probs.max(dim=-1))
+        cfr_confidence, cfrs = (values.tolist() for values in cfr_probs.max(dim=-1))
         severity = severity_probs.argmax(dim=-1).tolist()
         severity_probs = severity_probs.tolist()
         for index in range(len(chunk)):
