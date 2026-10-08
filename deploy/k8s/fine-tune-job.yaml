@@ -8,9 +8,10 @@
 #   gs://bucket/runs/${RUN_ID}/manifest.json   shared with the relabel Job
 #
 # Submit:
-#   export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
-#   export DATASET_PATH=dataset/v2/flash/train.json
-#   export TRAINER_IMAGE=your-registry/litewave-fda-trainer:TAG
+#   export RUN_ID=fda-20261008-092731
+#   export TRAINER_IMAGE=asia-southeast1-docker.pkg.dev/<PROJECT>/gke-finetune/dberta-finetuned:TAG
+#   export DATASET_PATH=runs/${RUN_ID}/data/train.json
+#   export EVAL_PATH=runs/${RUN_ID}/data/val.json
 #   envsubst < deploy/k8s/fine-tune-job.yaml | kubectl apply -f -
 #   kubectl logs -f job/fda-train-${RUN_ID} -n ml-workloads
 apiVersion: batch/v1

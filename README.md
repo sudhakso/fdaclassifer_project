@@ -93,8 +93,9 @@ export REGION=asia-southeast1
 export TRAINER_IMAGE=${REGION}-docker.pkg.dev/${PROJECT_ID}/gke-finetune/dberta-finetuned:TAG
 gcloud builds submit --tag "$TRAINER_IMAGE" .
 
-export RUN_ID=fda-$(date +%m%d-%H%M)
-export DATASET_PATH=dataset/v2/opus/train.json
+export RUN_ID=<RUN_ID of the relabel job>
+export DATASET_PATH=runs/${RUN_ID}/data/train.json
+export EVAL_PATH=runs/${RUN_ID}/data/val.json
 envsubst < deploy/k8s/fine-tune-job.yaml | kubectl apply -f -
 kubectl logs -f "job/fda-train-${RUN_ID}" -n ml-workloads -c trainer
 ```
@@ -128,9 +129,9 @@ The encoder is always loaded as float32. The hub checkpoint for DeBERTa-v3 is st
 The Job reads a trained model from `registry/${MODEL_RUN_ID}/`, scores the observations in `INPUT_PATH`, and writes `evaluation/predictions-${RUN_ID}.json`. The input has the same shape as the training file, and labels in it are ignored. `data/evaluation/fda_observations.json` is a small sample in that shape. The container entrypoint is still training; this Job overrides it.
 
 ```bash
-export RUN_ID=fda-test-$(date +%m%d-%H%M)
+export RUN_ID=fda-infer-$(date +%Y%m%d-%H%M%S)
 export MODEL_RUN_ID=<RUN_ID of the training job>
-export INPUT_PATH=dataset/v2/opus/test.json
+export INPUT_PATH=runs/${MODEL_RUN_ID}/data/test.json
 envsubst < deploy/k8s/infer-job.yaml | kubectl apply -f -
 kubectl logs -f "job/fda-infer-${RUN_ID}" -n ml-workloads -c infer
 ```
@@ -171,7 +172,7 @@ python3 scripts/score_predictions.py \
 
 `scripts/build_reference_sample.py` and `scripts/compare_reference_labels.py` draw a small stratified sample and measure how consistent a labeller is with itself and with the existing labels. Use them before relabelling everything.
 
-The same steps run as a CPU Job. It reads the two source files from the bucket, writes blind batches and rubric labels under `dataset/v2/relabel/`, then writes `train.json`, `val.json`, and `test.json` under `dataset/v2/opus/`. Rebuild the trainer image first so it includes `scripts/` and `labeling/`.
+The same steps run as a CPU Job. It reads the two source files from the bucket, writes blind batches and rubric labels under `/runs/${RUN_ID}/relabel/`, then writes `runs/${RUN_ID}/data/train.json`, `runs/${RUN_ID}/data/val.json`, and `runs/${RUN_ID}/data/test.json`. Rebuild the trainer image first so it includes `scripts/` and `labeling/`.
 
 The Job labels with Claude Opus 5.5 (`--provider=anthropic`). Create a secret `anthropic-api-key` with key `api-key`. To label with Gemini, change the Job to `--provider=gemini` and create `gemini-api-key` the same way.
 
@@ -191,13 +192,15 @@ python3 labeling/opus_labeler.py --input observations.json --labels opus_labels.
 The relabel Job and the train Job both update `gs://fdaclassifier/runs/${RUN_ID}/manifest.json`. Relabel records the source files and the trainer JSON paths. Training adds the registry path and the eval metrics. Each job only replaces its own fields, so the file still holds both stages when training finishes. The image must include this manifest writer. The running trainer tag does not.
 
 ```bash
-export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
+export INGEST=20261008
+export RUN_ID=fda-${INGEST}-$(date +%H%M%S)
 export TRAINER_IMAGE=asia-southeast1-docker.pkg.dev/<PROJECT>/gke-finetune/dberta-finetuned:TAG
-export S3_DATASET=dataset/fda_483_dataset.json
-export PRO_LABELS=dataset/fda_labelled_sample.json
-export RELABEL_DIR=dataset/v2/relabel
-export OUTPUT_DIR=dataset/v2/opus
-export LABEL_STORE=dataset/labels/opus_labels.json   # kept across releases
+export S3_DATASET=sources/s3/${INGEST}/fda_483_dataset.json
+export PRO_LABELS=sources/pro/${INGEST}/fda_labelled_sample.json
+export RELABEL_DIR=runs/${RUN_ID}/relabel
+export OUTPUT_DIR=runs/${RUN_ID}/data
+export LABEL_STORE=labels/${RUN_ID}_labels.json   # kept across releases
+
 envsubst < deploy/k8s/relabel-job.yaml | kubectl apply -f -
 kubectl logs -f "job/fda-relabel-${RUN_ID}  " -n ml-workloads
 ```

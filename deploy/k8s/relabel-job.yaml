@@ -17,13 +17,14 @@
 # it are not sent again. Point it at a new file for a full relabel.
 #
 # Submit:
-#   export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
+#   export INGEST=20261008
+#   export RUN_ID=fda-${INGEST}-$(date +%H%M%S)
 #   export TRAINER_IMAGE=asia-southeast1-docker.pkg.dev/<PROJECT>/gke-finetune/dberta-finetuned:TAG
-#   export S3_DATASET=dataset/fda_483_dataset.json
-#   export PRO_LABELS=dataset/fda_labelled_sample.json
-#   export RELABEL_DIR=dataset/v2/relabel
-#   export OUTPUT_DIR=dataset/v2/opus
-#   export LABEL_STORE=dataset/labels/opus_labels.json
+#   export S3_DATASET=sources/s3/${INGEST}/fda_483_dataset.json
+#   export PRO_LABELS=sources/pro/${INGEST}/fda_labelled_sample.json
+#   export RELABEL_DIR=runs/${RUN_ID}/relabel
+#   export OUTPUT_DIR=runs/${RUN_ID}/data
+#   export LABEL_STORE=labels/${RUN_ID}_labels.json
 #   envsubst < deploy/k8s/relabel-job.yaml | kubectl apply -f -
 #   kubectl logs -f job/fda-relabel-${RUN_ID} -n ml-workloads
 apiVersion: batch/v1

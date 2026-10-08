@@ -10,7 +10,7 @@
 # Submit:
 #   export RUN_ID=fda-$(date +%Y%m%d-%H%M%S)
 #   export MODEL_RUN_ID=<RUN_ID of the training job>
-#   export INPUT_PATH=dataset/v2/flash/test.json
+#   export INPUT_PATH=runs/${MODEL_RUN_ID}/data/test.json
 #   export TRAINER_IMAGE=your-registry/litewave-fda-trainer:TAG
 #   envsubst < deploy/k8s/infer-job.yaml | kubectl apply -f -
 #   kubectl logs -f job/fda-infer-${RUN_ID} -n ml-workloads
