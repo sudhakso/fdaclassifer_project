@@ -250,6 +250,10 @@ export MODEL_ARTIFACT_URI=gs://fdaclassifier/registry/<RUN_ID>
 
 # Image-only (no Vertex upload/deploy):
 # SKIP_DEPLOY=1 ./deploy/vertex/deploy_predictor.sh
+
+# List models deployed in VERTEX_REGION, then pick one to undeploy:
+# ./deploy/vertex/deploy_predictor.sh list
+# ./deploy/vertex/deploy_predictor.sh undeploy
 ```
 
 That produces:

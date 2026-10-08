@@ -14,7 +14,7 @@
 #
 # Required env:
 #   PROJECT_ID
-#   MODEL_ARTIFACT_URI     gs://fdaclassifier/registry/model-v1
+#   MODEL_ARTIFACT_URI     gs://fdaclassifier/registry/<RUN_ID>   (deploy only)
 # Optional:
 #   REGION                 Artifact Registry / Cloud Build region (default asia-southeast1)
 #   VERTEX_REGION          Vertex AI region (default us-central1)
@@ -30,10 +30,14 @@
 #   ACCELERATOR_COUNT      default 1
 #   MIN_REPLICA_COUNT      default 1
 #   MAX_REPLICA_COUNT      default 2
+#
+# List models deployed in VERTEX_REGION, or pick one to undeploy:
+#   ./deploy/vertex/deploy_predictor.sh list
+#   ./deploy/vertex/deploy_predictor.sh undeploy
 set -euo pipefail
 
+ACTION="${1:-deploy}"
 PROJECT_ID="${PROJECT_ID:?set PROJECT_ID}"
-MODEL_ARTIFACT_URI="${MODEL_ARTIFACT_URI:?set MODEL_ARTIFACT_URI}"
 REGION="${REGION:-asia-southeast1}"
 VERTEX_REGION="${VERTEX_REGION:-us-central1}"
 AR_REPO="${AR_REPO:-gke-finetune}"
@@ -51,6 +55,146 @@ MAX_REPLICA_COUNT="${MAX_REPLICA_COUNT:-2}"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"
+
+# Print one TSV row per deployed model:
+# endpoint_resource, endpoint_display, deployed_model_id, display_name, model_resource, deployed_at
+list_deployed_rows() {
+  gcloud ai endpoints list \
+    --project="${PROJECT_ID}" \
+    --region="${VERTEX_REGION}" \
+    --format='json(name,displayName)' \
+  | python3 -c '
+import json, subprocess, sys
+endpoints = json.load(sys.stdin)
+for endpoint in endpoints:
+    described = subprocess.check_output([
+        "gcloud", "ai", "endpoints", "describe", endpoint["name"],
+        "--project", "'"${PROJECT_ID}"'",
+        "--region", "'"${VERTEX_REGION}"'",
+        "--format", "json(deployedModels)",
+    ], text=True)
+    payload = json.loads(described)
+    for deployed in payload.get("deployedModels") or []:
+        created = deployed.get("createTime") or ""
+        if created.endswith("Z"):
+            created = created[:-1]
+        created = created.replace("T", " ")[:16]
+        print("\t".join([
+            endpoint["name"],
+            endpoint.get("displayName") or "",
+            str(deployed.get("id") or ""),
+            deployed.get("displayName") or "",
+            deployed.get("model") or "",
+            created,
+        ]))
+'
+}
+
+print_deployed_table() {
+  local rows="$1"
+  local index=0
+  if [[ -z "${rows}" ]]; then
+    echo "No deployed models in ${VERTEX_REGION}."
+    return 1
+  fi
+  printf '%-4s %-18s %-28s %-22s %s\n' "#" "DEPLOYED" "ENDPOINT" "DEPLOYED MODEL" "MODEL"
+  while IFS=$'\t' read -r endpoint_resource endpoint_display deployed_id display_name model_resource deployed_at; do
+    index=$((index + 1))
+    printf '%-4s %-18s %-28s %-22s %s\n' "${index}" "${deployed_at}" "${endpoint_display}" "${display_name}" "${model_resource}"
+    printf '     endpoint=%s deployed_model_id=%s\n' "${endpoint_resource}" "${deployed_id}"
+  done <<< "${rows}"
+}
+
+undeploy_chosen() {
+  local rows index chosen endpoint_resource deployed_id model_resource
+  local -a same_endpoint=() remaining=() split_parts=()
+  rows="$(list_deployed_rows)"
+  print_deployed_table "${rows}" || return 0
+  read -r -p "Number to undeploy (empty cancels): " chosen
+  if [[ -z "${chosen}" ]]; then
+    echo "Cancelled."
+    return 0
+  fi
+  if [[ ! "${chosen}" =~ ^[0-9]+$ ]]; then
+    echo "Enter the row number from the list."
+    return 1
+  fi
+  index=0
+  while IFS=$'\t' read -r endpoint_resource _endpoint_display deployed_id _display_name model_resource _deployed_at; do
+    index=$((index + 1))
+    if [[ "${index}" == "${chosen}" ]]; then
+      break
+    fi
+    endpoint_resource=""
+  done <<< "${rows}"
+  if [[ -z "${endpoint_resource}" ]]; then
+    echo "No row ${chosen}."
+    return 1
+  fi
+  while IFS=$'\t' read -r row_endpoint _row_display row_deployed _row_name _row_model _row_deployed_at; do
+    if [[ "${row_endpoint}" == "${endpoint_resource}" ]]; then
+      same_endpoint+=("${row_deployed}")
+    fi
+  done <<< "${rows}"
+  for deployed in "${same_endpoint[@]}"; do
+    if [[ "${deployed}" != "${deployed_id}" ]]; then
+      remaining+=("${deployed}")
+    fi
+  done
+  echo "Undeploying deployed_model_id=${deployed_id} from ${endpoint_resource}"
+  local -a undeploy_args=(
+    --project="${PROJECT_ID}"
+    --region="${VERTEX_REGION}"
+    --deployed-model-id="${deployed_id}"
+    --quiet
+  )
+  if [[ "${#remaining[@]}" -gt 0 ]]; then
+    local share=$((100 / ${#remaining[@]}))
+    local used=0
+    local last_index=$((${#remaining[@]} - 1))
+    local i
+    for i in "${!remaining[@]}"; do
+      if [[ "${i}" -eq "${last_index}" ]]; then
+        split_parts+=("${remaining[$i]}=$((100 - used))")
+      else
+        split_parts+=("${remaining[$i]}=${share}")
+        used=$((used + share))
+      fi
+    done
+    local joined
+    joined="$(IFS=,; echo "${split_parts[*]}")"
+    undeploy_args+=(--traffic-split="${joined}")
+  fi
+  gcloud ai endpoints undeploy-model "${endpoint_resource}" "${undeploy_args[@]}"
+  echo "Undeployed ${deployed_id}."
+  read -r -p "Also delete the Vertex model resource ${model_resource}? [y/N] " chosen
+  if [[ "${chosen}" == "y" || "${chosen}" == "Y" ]]; then
+    gcloud ai models delete "${model_resource}" \
+      --project="${PROJECT_ID}" \
+      --region="${VERTEX_REGION}" \
+      --quiet
+    echo "Deleted ${model_resource}."
+  fi
+}
+
+case "${ACTION}" in
+  list)
+    print_deployed_table "$(list_deployed_rows)" || true
+    exit 0
+    ;;
+  undeploy)
+    undeploy_chosen
+    exit 0
+    ;;
+  deploy)
+    ;;
+  *)
+    echo "Usage: $0 [deploy|list|undeploy]" >&2
+    exit 2
+    ;;
+esac
+
+MODEL_ARTIFACT_URI="${MODEL_ARTIFACT_URI:?set MODEL_ARTIFACT_URI}"
 
 echo "Building and pushing ${PREDICTOR_IMAGE} via Cloud Build"
 gcloud builds submit \
