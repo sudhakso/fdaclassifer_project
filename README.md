@@ -209,6 +209,45 @@ This Job does not request a GPU. A batch usually finishes within an hour and can
 
 Results so far are in `docs/results/2026-10-07-experiments.md`.
 
+## Synthetic batch record findings
+
+FDA 483 observations describe a site. Findings from the review of one executed batch record read differently, so the classifier is also trained on synthetic findings of that kind. `labeling/batch_record_rubric.md` is the addendum to the rubric for them. The pipeline is in `synthetic/`:
+
+```bash
+# 1. Sample the facts of each finding. Severity is never part of the facts.
+python synthetic/make_seeds.py --count 1500 --seed 11 --prefix f --output data/fda_synthetic/full/seeds.json         # fuller findings
+python synthetic/make_sparse_seeds.py --count 820 --seed 31 --output data/fda_synthetic/sparse/seeds.json            # one field on one page
+python synthetic/make_check_seeds.py --count 1500 --seed 97 --prefix k --output data/fda_synthetic/checks/seeds.json  # every entry that fails one check
+
+# 2. A writer turns each seed into one finding in several wordings, following
+#    writer_instructions.md, sparse_writer_instructions.md or check_writer_instructions.md,
+#    and saves findings_*.json next to the seeds.
+
+# 3. Two readers label every finding blind, on different wordings, following labeller_instructions.md.
+python synthetic/make_read_batches.py data/fda_synthetic/full data/fda_synthetic/full 100 7
+python synthetic/make_check_read_batches.py data/fda_synthetic/checks 100 113
+
+# 4. Keep the findings both readers agree on and merge them into an FDA arm.
+python synthetic/build_training_arm.py --fda-arm data/fda_arms/opus_nosummary_val \
+    --train-findings data/fda_synthetic/full data/fda_synthetic/sparse data/fda_synthetic/checks \
+    --test-findings data/fda_synthetic/trial_v6 --test-source data/fda_synthetic/trial \
+    --holdout data/fda_synthetic/checks/holdout_seed_ids.json --output data/fda_arms/opus_plus_synthetic_v2
+
+# 5. Score predictions on the held-out synthetic findings, by kind and wording.
+python synthetic/score_synthetic_test.py data/fda_arms/opus_plus_synthetic_v2/synthetic_test.json name=predictions.json
+```
+
+All wordings of a finding share one label and one split. Real audit findings are never used for training. The counts and seed values above are examples.
+
+## Decision model experiment
+
+`experiments/decision_model/` fine-tunes a small LLM (Qwen 3.5 2B, LoRA, Unsloth `FastDecisionModel`) on the same data. The model reads the finding together with three questions (severity, risk category, CFR section) whose criteria are the rubric (`questions.py`), and returns a probability for every option. `train_decision.py` trains, calibrates and writes predictions in the shape of `fda_classifier.infer`; `serve.py` answers the same Vertex request contract as the classifier. It has its own image because Unsloth pins an older transformers:
+
+```bash
+docker build -t fda-decision:dev experiments/decision_model
+docker build -t fda-decision-predictor:dev -f experiments/decision_model/Dockerfile.serve --build-arg BASE=fda-decision:dev experiments/decision_model
+```
+
 ## Vertex AI endpoint
 
 Register a trained export, for example `gs://fdaclassifier/registry/<RUN_ID>/`, create an endpoint in `us-central1`, then deploy onto one T4 with autoscaling 1 to 2 replicas.
