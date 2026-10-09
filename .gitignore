@@ -6,3 +6,5 @@ checkpoints/
 *.safetensors
 data/fda_*
 keys/
+.DS_Store
+scratch/
