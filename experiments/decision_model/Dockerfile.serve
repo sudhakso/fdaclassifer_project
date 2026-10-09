@@ -1,0 +1,9 @@
+# Prediction server for the decision model, on top of the experiment's training image.
+ARG BASE=asia-southeast1-docker.pkg.dev/striped-sight-489713-a0/gke-finetune/fda-decision:exp2
+FROM ${BASE}
+
+RUN pip install --no-cache-dir "fastapi>=0.115.0" "uvicorn[standard]>=0.32.0" "google-cloud-storage>=2.18.0"
+
+COPY serve.py ./
+
+ENTRYPOINT ["python3", "serve.py"]
