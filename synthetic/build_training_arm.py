@@ -9,9 +9,12 @@ A finding is kept when its two blind readers gave the same severity. All wording
 that label and stay in the same split. Synthetic findings are split train/val by finding. The
 held-out synthetic test set is a separate batch of findings plus the seed ids listed in --holdout.
 """
-import argparse, glob, hashlib, json, re
+import argparse, glob, hashlib, json, os, re, sys
 from collections import Counter
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from fda_classifier.manifest import update_manifest
 
 
 def section(value):
@@ -80,6 +83,7 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--val-ratio", type=float, default=0.1)
     parser.add_argument("--min-cfr-count", type=int, default=10)
+    parser.add_argument("--manifest", type=Path, help="Run manifest updated in place with the inputs and the files written")
     args = parser.parse_args()
 
     train_pool, dropped = [], 0
@@ -114,6 +118,20 @@ def main():
     print(f"synthetic_test: {len(test) * 3} rows ({len(test)} findings) | severity mix {dict(Counter(f['label']['severity'] for f in test))}")
     for name, group in (("train", train), ("val", val)):
         print(f"synthetic {name} label mix:", dict(Counter(f["label"]["severity"] for f in group)))
+    if args.manifest:
+        update_manifest(args.manifest, {
+            "run_id": os.environ.get("RUN_ID"),
+            "fda_arm": str(args.fda_arm),
+            "synthetic_train_findings": [str(folder) for folder in args.train_findings],
+            "synthetic_test_findings": str(args.test_findings),
+            "synthetic_test_source": str(args.test_source),
+            "synthetic_holdout": str(args.holdout) if args.holdout else None,
+            "synthetic_findings": {"train": len(train), "val": len(val), "test": len(test), "dropped": dropped},
+            "train_data": str(args.output / "train.json"),
+            "val_data": str(args.output / "val.json"),
+            "synthetic_test_data": str(args.output / "synthetic_test.json"),
+            "cfr_classes": str(args.output / "cfr_classes.json"),
+        })
 
 
 if __name__ == "__main__":
