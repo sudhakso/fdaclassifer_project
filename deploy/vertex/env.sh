@@ -15,3 +15,7 @@ export RELABEL_DIR=runs/${RUN_ID}/relabel
 export OUTPUT_DIR=runs/${RUN_ID}/data
 export DATASET_PATH=runs/${RUN_ID}/data/train.json
 export EVAL_PATH=runs/${RUN_ID}/data/val.json
+# Labelled synthetic findings merged into the training files (synthetic/build_training_arm.py).
+export SYNTHETIC_DIR=sources/synthetic/${SYNTHETIC_INGEST:-${INGEST}}
+# The decision model trains from its own image (experiments/decision_model).
+export DECISION_TRAINER_IMAGE=asia-southeast1-docker.pkg.dev/striped-sight-489713-a0/gke-finetune/fda-decision:${DECISION_IMAGE_TAG:-exp2}

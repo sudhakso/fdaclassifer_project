@@ -239,6 +239,8 @@ python synthetic/score_synthetic_test.py data/fda_arms/opus_plus_synthetic_v2/sy
 
 All wordings of a finding share one label and one split. Real audit findings are never used for training. The counts and seed values above are examples.
 
+For a tracked run, keep the labelled findings under `${SYNTHETIC_DIR}` in the bucket (`deploy/vertex/env.sh`), write the merged files to `runs/${RUN_ID}/data`, and pass `--manifest runs/${RUN_ID}/manifest.json` in step 4. The manifest then records the FDA arm, the synthetic folders and the files written.
+
 ## Decision model experiment
 
 `experiments/decision_model/` fine-tunes a small LLM (Qwen 3.5 2B, LoRA, Unsloth `FastDecisionModel`) on the same data. The model reads the finding together with three questions (severity, risk category, CFR section) whose criteria are the rubric (`questions.py`), and returns a probability for every option. `train_decision.py` trains, calibrates and writes predictions in the shape of `fda_classifier.infer`; `serve.py` answers the same Vertex request contract as the classifier. It has its own image because Unsloth pins an older transformers:
@@ -247,6 +249,8 @@ All wordings of a finding share one label and one split. Real audit findings are
 docker build -t fda-decision:dev experiments/decision_model
 docker build -t fda-decision-predictor:dev -f experiments/decision_model/Dockerfile.serve --build-arg BASE=fda-decision:dev experiments/decision_model
 ```
+
+`train_decision.py --manifest runs/${RUN_ID}/manifest.json` adds the training settings and the calibration result to the run manifest, with the same field names as `fda_classifier.train`. One manifest holds one training run, so a second model on the same data gets its own `RUN_ID` and points `--train` at the first run's files.
 
 ## Vertex AI endpoint
 
@@ -289,6 +293,11 @@ export MODEL_ARTIFACT_URI=gs://fdaclassifier/registry/<RUN_ID>
 
 # Image-only (no Vertex upload/deploy):
 # SKIP_DEPLOY=1 ./deploy/vertex/deploy_predictor.sh
+
+# Deploy an image that is already pushed, without building. The decision model's predictor needs this,
+# because the build step always builds Dockerfile.predictor:
+# SKIP_BUILD=1 PREDICTOR_IMAGE=<decision predictor image> ENDPOINT_NAME=<endpoint> MODEL_DISPLAY_NAME=<name> \
+#   MACHINE_TYPE=g2-standard-8 ACCELERATOR_TYPE=nvidia-l4 MAX_REPLICA_COUNT=1 ./deploy/vertex/deploy_predictor.sh
 
 # List models deployed in VERTEX_REGION, then pick one to undeploy:
 # ./deploy/vertex/deploy_predictor.sh list
