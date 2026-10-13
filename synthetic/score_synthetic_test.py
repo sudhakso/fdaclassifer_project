@@ -9,9 +9,9 @@ score_endpoint.py ([{"id": "<seed>|<wording>", ...}]). Several files may share o
 import json, sys
 from collections import defaultdict
 
-FAMILIES = {"s": "fuller", "n": "sparse", "k": "check-style", "t": "check-style with the step named"}
+FAMILIES = {"s": "fuller", "n": "sparse", "k": "check-style", "t": "check-style with the step named", "u": "check-style with the subject named"}
 CHECK_WORDINGS = ("observation", "observation_expected_actual", "narrative")
-WORDINGS = {"k": CHECK_WORDINGS, "t": CHECK_WORDINGS}
+WORDINGS = {"k": CHECK_WORDINGS, "t": CHECK_WORDINGS, "u": CHECK_WORDINGS}
 DEFAULT_WORDINGS = ("short", "expected_actual", "narrative")
 
 truth = {}

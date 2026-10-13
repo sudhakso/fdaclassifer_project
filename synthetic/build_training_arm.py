@@ -5,8 +5,8 @@
         --test-findings data/fda_synthetic/trial_v6 --test-source data/fda_synthetic/trial --holdout data/fda_synthetic/checks/holdout_seed_ids.json \
         --output data/fda_arms/opus_plus_synthetic_v2
 
-A finding is kept when its two blind readers gave the same severity. All wordings of a finding get
-that label and stay in the same split. Synthetic findings are split train/val by finding. The
+A finding is kept when its two blind readers gave the same severity, risk category and CFR
+section. All wordings of a finding get that label and stay in the same split. Synthetic findings are split train/val by finding. The
 held-out synthetic test set is a separate batch of findings plus the seed ids listed in --holdout.
 """
 import argparse, glob, hashlib, json, os, re, sys
@@ -22,6 +22,9 @@ def section(value):
     return match.group(0) if match else None
 
 
+SAME = (lambda label: label["severity"], lambda label: label["risk_category"].lower(), lambda label: section(label.get("cfr_section")))
+
+
 def agreed(labels_dir: Path, findings_dir: Path):
     key = json.load(open(labels_dir / "key.json"))
     labels = {l["id"]: l for path in glob.glob(str(labels_dir / "labels" / "*.json")) for l in json.load(open(path))}
@@ -33,7 +36,7 @@ def agreed(labels_dir: Path, findings_dir: Path):
     kept, dropped = [], 0
     for seed_id, finding in findings.items():
         pair = reads.get(seed_id, {})
-        if set(pair) != {"a", "b"} or pair["a"]["severity"] != pair["b"]["severity"]:
+        if set(pair) != {"a", "b"} or any(same(pair["a"]) != same(pair["b"]) for same in SAME):
             dropped += 1
             continue
         kept.append({"seed_id": seed_id, "establishment_type": finding["establishment_type"], "wordings": wordings(finding["wordings"]), "label": pair["a"]})
@@ -77,7 +80,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--fda-arm", required=True, type=Path)
     parser.add_argument("--train-findings", required=True, type=Path, nargs="+", help="Folders with findings_*.json, key.json and labels/")
-    parser.add_argument("--holdout", type=Path, help="JSON list of seed ids to move from training to the held-out test set")
+    parser.add_argument("--holdout", type=Path, nargs="+", default=[], help="JSON lists of seed ids to move from training to the held-out test set")
     parser.add_argument("--test-findings", required=True, type=Path, help="Folder with key.json and labels/ for the held-out findings")
     parser.add_argument("--test-source", required=True, type=Path, help="Folder with the held-out findings_*.json")
     parser.add_argument("--output", required=True, type=Path)
@@ -92,7 +95,7 @@ def main():
         print(f"{folder}: {len(kept)} kept, {lost} dropped | {dict(Counter(f['label']['severity'] for f in kept))}")
         train_pool, dropped = train_pool + kept, dropped + lost
     test, test_dropped = agreed(args.test_findings, args.test_source)
-    holdout = set(json.load(open(args.holdout))) if args.holdout else set()
+    holdout = {seed_id for path in args.holdout for seed_id in json.load(open(path))}
     test += [f for f in train_pool if f["seed_id"] in holdout]
     train_pool = [f for f in train_pool if f["seed_id"] not in holdout]
     print(f"training findings: {len(train_pool)} kept, {dropped} dropped (readers disagree or a read is missing)")
@@ -125,7 +128,7 @@ def main():
             "synthetic_train_findings": [str(folder) for folder in args.train_findings],
             "synthetic_test_findings": str(args.test_findings),
             "synthetic_test_source": str(args.test_source),
-            "synthetic_holdout": str(args.holdout) if args.holdout else None,
+            "synthetic_holdout": [str(path) for path in args.holdout],
             "synthetic_findings": {"train": len(train), "val": len(val), "test": len(test), "dropped": dropped},
             "train_data": str(args.output / "train.json"),
             "val_data": str(args.output / "val.json"),

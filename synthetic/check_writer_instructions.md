@@ -13,6 +13,11 @@ You are given a file of seeds. Each seed holds the facts of one finding. Write t
 - `process` is what is being made. Take your steps, equipment, tests and materials from it, and
   invent plausible specifics: operation numbers, page numbers, table names, sample and request
   numbers, equipment tags, values with units.
+- `subject`, when a seed has it, is what the failing entries are about. Make that plain to a reader
+  in ordinary words, in the observation and in the narrative, without copying the phrase.
+- `terms`, when a seed has it, are the words this plant and this review use. Wherever the finding
+  mentions one of those things, use the given term and no synonym, in every wording, and do not
+  spell out an abbreviation. It also applies to how you name the documents.
 - `documents` are the documents the finding involves. Give each an invented file name of the kind
   a scanned package has, and cite it. With two documents, the finding must cite both.
 - `checks` is what the review tested. `compares` says what was compared. `defect_forms` are the
