@@ -23,6 +23,8 @@
 #   IMAGE_TAG              image tag (default v1.4)
 #   PREDICTOR_IMAGE        full image URI override (skips REGION/AR_REPO/IMAGE_* assembly)
 #   SKIP_DEPLOY            set to 1 to only build/push the image
+#   SKIP_BUILD             set to 1 to deploy PREDICTOR_IMAGE as it is. Needed for images this
+#                          script does not build, such as the decision model's predictor
 #   ENDPOINT_NAME          default fda-classifier-endpoint
 #   MODEL_DISPLAY_NAME     default deberta-fda-classifier
 #   MACHINE_TYPE           default n1-standard-4
@@ -45,6 +47,7 @@ IMAGE_NAME="${IMAGE_NAME:-dberta-finetuned}"
 IMAGE_TAG="${IMAGE_TAG:-v1.4}"
 PREDICTOR_IMAGE="${PREDICTOR_IMAGE:-${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPO}/${IMAGE_NAME}:${IMAGE_TAG}}"
 SKIP_DEPLOY="${SKIP_DEPLOY:-0}"
+SKIP_BUILD="${SKIP_BUILD:-0}"
 ENDPOINT_NAME="${ENDPOINT_NAME:-fda-classifier-endpoint}"
 MODEL_DISPLAY_NAME="${MODEL_DISPLAY_NAME:-deberta-fda-classifier}"
 MACHINE_TYPE="${MACHINE_TYPE:-n1-standard-4}"
@@ -207,14 +210,18 @@ esac
 
 MODEL_ARTIFACT_URI="${MODEL_ARTIFACT_URI:?set MODEL_ARTIFACT_URI}"
 
-echo "Building and pushing ${PREDICTOR_IMAGE} via Cloud Build"
-gcloud builds submit \
-  --project="${PROJECT_ID}" \
-  --config=deploy/vertex/cloudbuild.yaml \
-  --substitutions="_IMAGE=${PREDICTOR_IMAGE}" \
-  .
+if [[ "${SKIP_BUILD}" == "1" ]]; then
+  echo "Using existing image ${PREDICTOR_IMAGE}"
+else
+  echo "Building and pushing ${PREDICTOR_IMAGE} via Cloud Build"
+  gcloud builds submit \
+    --project="${PROJECT_ID}" \
+    --config=deploy/vertex/cloudbuild.yaml \
+    --substitutions="_IMAGE=${PREDICTOR_IMAGE}" \
+    .
 
-echo "Image available at ${PREDICTOR_IMAGE}"
+  echo "Image available at ${PREDICTOR_IMAGE}"
+fi
 
 if [[ "${SKIP_DEPLOY}" == "1" ]]; then
   exit 0

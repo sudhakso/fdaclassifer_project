@@ -12,8 +12,10 @@ Prediction files are written in the shape of ``python -m fda_classifier.infer`` 
 """
 import argparse
 import json
+import os
 import shutil
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 from unsloth import FastDecisionModel, DecisionTrainer, is_bfloat16_supported  # isort: skip, must load before transformers
@@ -44,6 +46,15 @@ def load_rows(path: str, asked: dict, limit: int | None) -> list[dict]:
     return rows[:limit] if limit else rows
 
 
+def update_manifest(path: str, updates: dict) -> None:
+    """Merge fields into the run manifest, as fda_classifier.manifest does. This image does not carry that package."""
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    current = json.loads(destination.read_text(encoding="utf-8")) if destination.is_file() else {}
+    current.update(updates)
+    destination.write_text(json.dumps(current, indent=2, default=str) + "\n", encoding="utf-8")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--train", required=True)
@@ -59,7 +70,23 @@ def main() -> None:
     parser.add_argument("--grad-accumulation", type=int, default=8)
     parser.add_argument("--learning-rate", type=float, default=2e-4)
     parser.add_argument("--limit", type=int, help="Use only the first N rows of every file (smoke test)")
+    parser.add_argument("--manifest", help="Run manifest updated in place. The data build writes the source paths into the same file")
     args = parser.parse_args()
+    if args.manifest:
+        update_manifest(args.manifest, {
+            "run_id": os.environ.get("RUN_ID"),
+            "train_data": args.train,
+            "eval_data": args.val,
+            "base_model": args.base_model,
+            "registry": args.output_dir,
+            "epochs": args.epochs,
+            "batch_size": args.batch_size,
+            "grad_accumulation": args.grad_accumulation,
+            "learning_rate": args.learning_rate,
+            "max_seq_length": args.max_seq_length,
+            "train_status": "running",
+            "train_started_at": datetime.now(timezone.utc).isoformat(),
+        })
 
     asked = questions(json.loads(Path(args.cfr_classes).read_text(encoding="utf-8")))
     train_rows = load_rows(args.train, asked, args.limit)
@@ -122,6 +149,14 @@ def main() -> None:
     (export / "training_summary.json").write_text(json.dumps(summary, indent=1, default=str) + "\n", encoding="utf-8")
     shutil.copytree(export, args.output_dir, dirs_exist_ok=True)
     print(f"saved to {args.output_dir}", flush=True)
+    if args.manifest:
+        update_manifest(args.manifest, {
+            "train_examples": len(train_rows),
+            "eval_examples": len(val_rows),
+            "train_metrics": calibration,
+            "train_status": "complete",
+            "train_finished_at": datetime.now(timezone.utc).isoformat(),
+        })
 
     FastDecisionModel.for_inference(model)
     for spec in args.predict:
