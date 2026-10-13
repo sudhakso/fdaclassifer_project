@@ -219,6 +219,7 @@ python synthetic/make_seeds.py --count 1500 --seed 11 --prefix f --output data/f
 python synthetic/make_sparse_seeds.py --count 820 --seed 31 --output data/fda_synthetic/sparse/seeds.json            # one field on one page
 python synthetic/make_check_seeds.py --count 1500 --seed 97 --prefix k --output data/fda_synthetic/checks/seeds.json  # every entry that fails one check
 python synthetic/make_step_seeds.py --count 500 --seed 211 --prefix t --output data/fda_synthetic/steps/seeds.json     # one check, with the kind of step named
+python synthetic/make_subject_seeds.py --count 800 --seed 307 --prefix u --output data/fda_synthetic/subjects/seeds.json # checks, with what the entries are about named
 
 # 2. A writer turns each seed into one finding in several wordings, following
 #    writer_instructions.md, sparse_writer_instructions.md or check_writer_instructions.md,
