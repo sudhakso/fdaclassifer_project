@@ -5,10 +5,7 @@ findings read as gaps in a record and few are about components, a step done diff
 instruction, or deviations and review. Here each seed also says what the entries concern. The
 subjects are the rows of the "Risk category and CFR section" table in
 labeling/batch_record_rubric.md; the checks and their defect forms are those of
-make_check_seeds.py. Each seed also fixes the terms the plant uses for a few common things, because
-the same lot number is a batch number, an in-house batch number or an A.R. number depending on
-the plant, and a finding quotes the record's own words. Severity, category and section are never
-mentioned here or to the writers.
+make_check_seeds.py. Severity, category and section are never mentioned here or to the writers.
 
     python synthetic/make_subject_seeds.py --count 800 --seed 307 --prefix u --output data/fda_synthetic/subjects/seeds.json
 """
@@ -23,12 +20,12 @@ LAB = "analytical record of in-process or release tests"
 SUBJECTS = [
     # what the entries concern, single documents, document pairs, checks that fit, weight
     ("the components charged to the batch: their names, lot or reference numbers, weighed and added quantities, and released status",
-     ["material usage table of the executed batch production record", "weighing and dispensing record"],
-     [(PRODUCTION, "store issue or requisition record for the components"), (PRODUCTION, "weighing and dispensing record"), ("weighing and dispensing record", "store issue or requisition record for the components")],
+     [PRODUCTION, "weighing and dispensing record"],
+     [(PRODUCTION, "weighing and dispensing record")],
      ["identifiers", "quantities", "restated values", "repeated rows", "signatures", "step against instruction", "referenced attachments", "entry integrity"], 22),
     ("the containers, closures or packaging materials used: their lot numbers, quantities and released status",
-     ["packaging material usage table of the executed batch production record"],
-     [(PRODUCTION, "store issue or requisition record for packaging materials")],
+     [PRODUCTION],
+     [(PRODUCTION, "dispensing record for the containers, closures or packaging materials")],
      ["identifiers", "quantities", "repeated rows", "referenced attachments"], 4),
     ("what was done at a step compared with what the instruction for that step says: the equipment, material, quantity, order, condition or frequency instructed",
      [PRODUCTION, "monitoring log"],
@@ -71,16 +68,6 @@ SUBJECTS = [
      [("audit trail printout", LAB)],
      ["entry integrity", "identifiers", "dates", "signatures", "referenced attachments"], 3),
 ]
-TERMS = [
-    # thing, what different plants and reviews call it
-    ("the lot number of a component", ["lot number", "batch number", "in-house batch number", "A.R. number", "control number", "receipt number"]),
-    ("the executed batch record", ["batch production record", "BPR", "BMR", "BPCR", "batch manufacturing record", "batch card"]),
-    ("the master record", ["master production record", "MFR", "master formula", "MPCR", "master batch record"]),
-    ("the record of components issued by the store", ["stores issue record", "material indent", "requisition slip", "material issue form", "issue voucher"]),
-    ("a numbered step", ["operation", "step", "stage", "Sr. No."]),
-    ("an empty field", ["blank", "a dash", "null", "NA", "not recorded"]),
-    ("a field of a form", ["its plain name", "the label printed on the form, in quotes", "a machine field name in lower case with underscores"]),
-]
 EXTRA_CHECKS = [
     # two rows of the rubric table have no check of their own in make_check_seeds.py; same shape as CHECKS
     ("instruction followed", "what the instruction for a step tells the operator to do or use against what the record shows was done or used",
@@ -121,7 +108,6 @@ def main():
             "values": pick(rng, VALUES),
             "step": pick(rng, STEP),
             "afterwards": pick(rng, AFTERWARDS),
-            "terms": {thing: rng.choice(names) for thing, names in TERMS},
         }
         seeds.append({"seed_id": f"{args.prefix}{index:04d}", "establishment_type": rng.choice(establishments), "facts": facts})
     args.output.parent.mkdir(parents=True, exist_ok=True)
