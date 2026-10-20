@@ -77,7 +77,7 @@ for endpoint in endpoints:
         "--region", "'"${VERTEX_REGION}"'",
         "--format", "json(deployedModels)",
     ], text=True)
-    payload = json.loads(described)
+    payload = json.loads(described) or {}
     for deployed in payload.get("deployedModels") or []:
         created = deployed.get("createTime") or ""
         if created.endswith("Z"):
